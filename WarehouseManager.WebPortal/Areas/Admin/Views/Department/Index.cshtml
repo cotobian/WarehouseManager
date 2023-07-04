@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Danh sách Phòng ban";
+}
+<div class="card">
+    <div class="card-header">
+        <h3>Danh sách Phòng ban</h3>
+    </div>
+    <div class="card-body">
+        <div class="container-fluid">
+            <a class="btn btn-success" style="margin-bottom:10px;" onclick="PopupForm('User/AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
+            <table id="truckTable" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Tên Người dùng</th>
+                        <th>Tài khoản</th>
+                        <th>Chức danh</th>
+                        <th>Phòng ban</th>
+                        <th>Sửa</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+
+    </script>
+}
