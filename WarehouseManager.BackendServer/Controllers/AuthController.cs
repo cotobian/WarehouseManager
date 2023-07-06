@@ -8,6 +8,7 @@ using System.Text;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.ViewModels;
+using WarehouseManager.ViewModels.Admin.User;
 
 namespace WarehouseManager.BackendServer.Controllers
 {
@@ -96,6 +97,24 @@ namespace WarehouseManager.BackendServer.Controllers
         public async Task<IActionResult> Register(UserLoginVm userVm)
         {
             User user = new User();
+            CreatePasswordHash(userVm.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            user.PasswordSalt = passwordSalt;
+            user.PasswordHash = passwordHash;
+            user.Username = userVm.Username;
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return Ok(user);
+        }
+
+        [Authorize("Bearer")]
+        [HttpPost("RegisterUserVm")]
+        public async Task<IActionResult> RegisterUserVm(CreateUserVm userVm)
+        {
+            User user = new User();
+            user.FullName = userVm.FullName;
+            user.Username = userVm.Username;
+            user.DepartmentId = userVm.DepartmentId;
+            user.RoleId = userVm.RoleId;
             CreatePasswordHash(userVm.Password, out byte[] passwordHash, out byte[] passwordSalt);
             user.PasswordSalt = passwordSalt;
             user.PasswordHash = passwordHash;

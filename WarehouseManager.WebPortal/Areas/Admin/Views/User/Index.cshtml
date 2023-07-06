@@ -36,11 +36,10 @@
                     "datatype": "json",
                 },
                 "columns": [
-                    { "data": "fullname" },
+                    { "data": "fullName" },
                     { "data": "username" },
-                    { "data": "password" },
-                    { "data": "RoleName" },
-                    { "data": "DepartmentName" },
+                    { "data": "roleName" },
+                    { "data": "departmentName" },
                     {
                         "data": "id", "render": function (data) {
                             return "<i class='fa fa-pencil-alt f-18 text-success' onclick=PopupForm('User/AddOrEdit?id=" + data + "')><i/>";
@@ -72,7 +71,7 @@
                     autoOpen: true,
                     resizeable: false,
                     title: 'Nhập thông tin người dùng',
-                    height: 220,
+                    height: 480,
                     width: 600,
                     close: function () {
                         Popup.dialog('destroy').remove();

@@ -1,32 +1,93 @@
 ﻿@{
     ViewData["Title"] = "Danh sách Phòng ban";
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css" />
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+@*<style>
+    .list-group-item {
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: -1px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+    }
+    .list-group-item:first-child {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+    .glyphicon {
+        position: relative;
+        top: 1px;
+        display: inline-block;
+        font-family: 'Glyphicons Halflings';
+        font-style: normal;
+        font-weight: 400;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+</style>
+*@
 <div class="card">
     <div class="card-header">
         <h3>Danh sách Phòng ban</h3>
     </div>
     <div class="card-body">
-        <div class="container-fluid">
-            <a class="btn btn-success" style="margin-bottom:10px;" onclick="PopupForm('User/AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
-            <table id="truckTable" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Tên Người dùng</th>
-                        <th>Tài khoản</th>
-                        <th>Chức danh</th>
-                        <th>Phòng ban</th>
-                        <th>Sửa</th>
-                        <th>Xóa</th>
-                    </tr>
-                </thead>
-            </table>
+        <div class="row">
+            <div class="col-md-6 col-lg-6 col-12">
+                <div id="treeview" class="treeview"></div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-12">
+                <div class="row pb-2">
+                    <input type="button" class="btn btn-success" value="Thêm" id="addBtn" style="margin-right:10px;" />
+                    <input type="button" class="btn btn-danger" value="Xóa" id="deleteBtn" />
+                </div>
+                <div class="row pb-2">
+                    <div class="col-md-4 col-12">
+                        <label class="control-label">
+                            Tên đơn vị
+                        </label>
+                    </div>
+                    <div class="col-md-8 col-12">
+                        <input type="text" class="form-control" name="name" id="name" />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 
 @section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: 'Department/GetTreeView', 
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('#treeview').treeview({
+                    data: data ,
+                    enableLinks: true,
+                    expandIcon: 'glyphicon glyphicon-plus', 
+                    collapseIcon: 'glyphicon glyphicon-minus', 
+                    showBorder: false
+                    });
+                }
+            });
+        });
 
+        $('#treeview').on('nodeExpanded nodeCollapsed', function(event, node) {
+            var iconElement = $(node)[0].$el.find('.icon');
+            if (node.state.expanded) {
+                iconElement.removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            } else {
+                iconElement.removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }
+        });
     </script>
 }

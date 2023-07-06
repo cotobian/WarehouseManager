@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "Phân quyền Chức danh";
+}
+
+<h1>Index</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Danh sách Phòng ban</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 col-lg-3 col-12">
+                <div id="listview" class="listview"></div>
+            </div>
+            <div class="col-md-9 col-lg-9 col-12">
+                <div class="container-fluid">
+                    <a class="btn btn-success" style="margin-bottom:10px;" onclick="PopupForm('Function/AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
+                    <table id="truckTable" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Tên chức năng</th>
+                                <th>Quyền xem</th>
+                                <th>Quyền thêm</th>
+                                <th>Quyền sửa</th>
+                                <th>Quyền xóa</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -26,9 +26,10 @@ namespace WarehouseManager.BackendServer.Controllers
                             Id = u.Id,
                             FullName = u.FullName,
                             Username = u.Username,
-                            Password = "",
                             RoleName = r.Name,
-                            DepartmentName = d.Name
+                            DepartmentName = d.Name,
+                            RoleId = r.Id,
+                            DepartmentId = d.Id
                         };
             var data = await query.OrderBy(c => c.Id).ToListAsync();
             return Ok(data);

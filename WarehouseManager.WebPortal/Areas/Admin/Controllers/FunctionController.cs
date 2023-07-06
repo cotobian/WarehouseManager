@@ -65,15 +65,6 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<JsonResult> Delete(int id)
-        {
-            HttpResponseMessage response = await _httpClient.DeleteAsync(apiUrl + "/" + id);
-            if (response.IsSuccessStatusCode)
-                return Json(new { success = true, message = "Xóa dữ liệu thành công" });
-            else return Json(new { success = false, message = "Có lỗi xóa dữ liệu" });
-        }
-
         private async Task<List<Function>> GetParentList()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/Parent");
@@ -82,6 +73,15 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
             List<Function> functions = JsonConvert.DeserializeObject<List<Function>>(responseBody);
             List<Function> parentFunction = functions.Where(c => c.ParentId == null).ToList();
             return parentFunction;
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Delete(int id)
+        {
+            HttpResponseMessage response = await _httpClient.DeleteAsync(apiUrl + "/" + id);
+            if (response.IsSuccessStatusCode)
+                return Json(new { success = true, message = "Xóa dữ liệu thành công" });
+            else return Json(new { success = false, message = "Có lỗi xóa dữ liệu" });
         }
     }
 }
