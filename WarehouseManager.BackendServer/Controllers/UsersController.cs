@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.ViewModels.Admin.User;
+using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Controllers
 {
@@ -20,7 +21,7 @@ namespace WarehouseManager.BackendServer.Controllers
             var query = from u in _context.Users
                         join d in _context.Departments on u.DepartmentId equals d.Id
                         join r in _context.Roles on u.RoleId equals r.Id
-                        where u.Status == Constants.UserStatus.Working
+                        where u.Status == UserStatus.Working
                         select new GetUserVm
                         {
                             Id = u.Id,
@@ -41,7 +42,7 @@ namespace WarehouseManager.BackendServer.Controllers
             User res = await _context.Users.FindAsync(id);
             if (res != null)
             {
-                res.Status = Constants.UserStatus.Delete;
+                res.Status = UserStatus.Delete;
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

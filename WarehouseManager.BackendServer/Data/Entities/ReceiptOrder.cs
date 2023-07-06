@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using WarehouseManager.BackendServer.Constants;
+using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Data.Entities
 {

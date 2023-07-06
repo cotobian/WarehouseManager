@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
+using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Controllers
 {
@@ -17,7 +18,7 @@ namespace WarehouseManager.BackendServer.Controllers
             DeliveryOrder res = await _context.DeliveryOrders.FindAsync(id);
             if (res != null)
             {
-                res.OrderStatus = Constants.OrderStatus.Deleted;
+                res.OrderStatus = OrderStatus.Deleted;
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

@@ -1,4 +1,4 @@
-﻿namespace WarehouseManager.BackendServer.Constants
+﻿namespace WarehouseManager.ViewModels.Constants
 {
     public enum ForkLiftJobType
     {

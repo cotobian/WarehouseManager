@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
+using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Controllers
 {
@@ -16,7 +17,7 @@ namespace WarehouseManager.BackendServer.Controllers
             CurrentPosition res = await _context.CurrentPositions.FindAsync(id);
             if (res != null)
             {
-                res.Status = Constants.CurrentPositionStatus.Deleted;
+                res.Status = CurrentPositionStatus.Deleted;
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

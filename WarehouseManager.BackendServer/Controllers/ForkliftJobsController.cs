@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
+using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Controllers
 {
@@ -17,7 +18,7 @@ namespace WarehouseManager.BackendServer.Controllers
             ForkliftJob res = await _context.ForkliftJobs.FindAsync(id);
             if (res != null)
             {
-                res.JobStatus = Constants.ForkLiftJobStatus.Deleted;
+                res.JobStatus = ForkLiftJobStatus.Deleted;
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
