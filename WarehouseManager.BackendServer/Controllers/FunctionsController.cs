@@ -7,7 +7,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class FunctionsController : BaseController<Function>
     {
-        public FunctionsController(WhContext context) : base(context)
+        public FunctionsController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
 

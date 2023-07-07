@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Phân quyền Chức danh";
+    ViewData["Title"] = "Phân quyền Người dùng";
 }
 <style>
     .list-group-item:hover {
@@ -22,7 +22,7 @@
             <div class="col-md-3 col-lg-3 col-12">
                 <div id="listview" class="listview">
                     <label class="control-label">
-                        <h4>Danh sách Chức danh</h4>
+                        <h4>Danh sách Người dùng</h4>
                     </label>
                     <ul class="list-group" id="role-list"></ul>
                 </div>
@@ -61,12 +61,12 @@
         $(document).ready(function() {
             //load roles list to the left sidebar
             $.ajax({
-                url: 'Role/GetAllRole', 
+                url: 'User/GetAllUser', 
                 type: 'GET',
                 dataType: 'json',
-                success: function (roles) {
-                    roles.data.forEach(function(role){
-                        $('#role-list').append('<li class="list-group-item" data-role-id="' + role.id + '" onclick=GetPermission(' + role.id + ')>' + role.name+ '</li>');
+                success: function (users) {
+                    users.data.forEach(function(user){
+                        $('#role-list').append('<li class="list-group-item" data-role-id="' + user.id + '" onclick=GetPermission(' + user.id + ')>' + user.fullName+ '</li>');
                     });
                 }
             });
@@ -74,7 +74,7 @@
             //first load empty permission
             dataTable = $("#truckTable").DataTable({
                 "ajax": {
-                    "url": "RolePermission/GetRolePermissionByRoleId?roleid=" + 0,
+                    "url": "UserPermission/GetUserPermissionByUserId?userid=" + 0,
                     "type": "GET",
                     "datatype": "json",
                 },
@@ -123,7 +123,7 @@
             }).addClass('active');
 
             //load permission of the clicked row
-            dataTable.ajax.url("RolePermission/GetRolePermissionByRoleId?roleid=" + id).load();
+            dataTable.ajax.url("UserPermission/GetUserPermissionByUserId?userid=" + id).load();
         }
 
         //update role permission

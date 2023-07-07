@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using WarehouseManager.BackendServer.Data;
 
@@ -12,10 +13,12 @@ namespace WarehouseManager.BackendServer.Controllers
     public class BaseController<T> : ControllerBase where T : class
     {
         public readonly WhContext _context;
+        public readonly IConfiguration _configuration;
 
-        public BaseController(WhContext context)
+        public BaseController(WhContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [HttpGet]

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.ViewModels.Constants;
@@ -8,7 +7,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class DeliveryOrdersController : BaseController<DeliveryOrder>
     {
-        public DeliveryOrdersController(WhContext context) : base(context)
+        public DeliveryOrdersController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
 

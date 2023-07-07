@@ -5,7 +5,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class PalletsController : BaseController<Pallet>
     {
-        public PalletsController(WhContext context) : base(context)
+        public PalletsController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
     }

@@ -5,7 +5,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class DeliveryDetailsController : BaseController<DeliveryDetail>
     {
-        public DeliveryDetailsController(WhContext context) : base(context)
+        public DeliveryDetailsController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
     }

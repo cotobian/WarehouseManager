@@ -5,7 +5,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class WarehousePositionsController : BaseController<WarehousePosition>
     {
-        public WarehousePositionsController(WhContext context) : base(context)
+        public WarehousePositionsController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
     }

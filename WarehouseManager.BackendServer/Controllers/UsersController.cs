@@ -9,7 +9,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class UsersController : BaseController<User>
     {
-        public UsersController(WhContext context) : base(context)
+        public UsersController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
 

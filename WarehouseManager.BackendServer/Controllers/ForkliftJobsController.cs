@@ -8,7 +8,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class ForkliftJobsController : BaseController<ForkliftJob>
     {
-        public ForkliftJobsController(WhContext context) : base(context)
+        public ForkliftJobsController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
 

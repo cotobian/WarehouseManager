@@ -5,7 +5,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class ExtraReceiptDetailsController : BaseController<ExtraReceiptDetail>
     {
-        public ExtraReceiptDetailsController(WhContext context) : base(context)
+        public ExtraReceiptDetailsController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
     }

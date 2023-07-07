@@ -5,12 +5,8 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class AgentsController : BaseController<Agent>
     {
-        #region Init
-
-        public AgentsController(WhContext context) : base(context)
+        public AgentsController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
-
-        #endregion Init
     }
 }

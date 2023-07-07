@@ -1,9 +1,9 @@
-﻿namespace WarehouseManager.ViewModels.Admin.RolePermission
+﻿namespace WarehouseManager.ViewModels.Admin.UserPermission
 {
-    public class RolePermissionVm
+    public class UserPermissionVm
     {
         public int Id { get; set; }
-        public int RoleId { get; set; }
+        public int UserId { get; set; }
         public int FunctionId { get; set; }
         public string FunctionName { get; set; } = "";
         public bool hasCreate { get; set; }

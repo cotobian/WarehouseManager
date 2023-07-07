@@ -5,7 +5,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class FactoriesController : BaseController<Factory>
     {
-        public FactoriesController(WhContext context) : base(context)
+        public FactoriesController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
     }

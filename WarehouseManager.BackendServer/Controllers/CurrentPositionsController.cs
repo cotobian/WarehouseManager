@@ -7,7 +7,7 @@ namespace WarehouseManager.BackendServer.Controllers
 {
     public class CurrentPositionsController : BaseController<CurrentPosition>
     {
-        public CurrentPositionsController(WhContext context) : base(context)
+        public CurrentPositionsController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
         }
 
