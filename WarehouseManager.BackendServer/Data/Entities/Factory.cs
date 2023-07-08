@@ -11,10 +11,10 @@ namespace WarehouseManager.BackendServer.Data.Entities
         public int Id { get; set; }
 
         [Required, Column(TypeName = "nvarchar(200)")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Column(TypeName = "nvarchar(500)")]
-        public string Address { get; set; }
+        public string Address { get; set; } = string.Empty;
 
         public bool Status { get; set; } = true;
     }

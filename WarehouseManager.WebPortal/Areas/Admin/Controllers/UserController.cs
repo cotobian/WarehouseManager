@@ -18,8 +18,6 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
             return View();
         }
 
-        private string apiUrl = "/api/Users";
-
         [HttpGet]
         public async Task<JsonResult> GetAllUser()
         {
@@ -47,7 +45,7 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AddOrEdit(User obj)
+        public override async Task<JsonResult> AddOrEdit(User obj)
         {
             ViewBag.RoleList = (await RoleList()).Select(c => new { c.Id, c.Name });
             ViewBag.DepartmentList = (await DepartmentList()).Select(c => new { c.Id, c.Name });
@@ -55,12 +53,14 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Hãy chọn chức danh và đơn vị!" });
             if (obj.Id == 0)
             {
-                CreateUserVm userVm = new CreateUserVm();
-                userVm.FullName = obj.FullName;
-                userVm.Username = obj.Username;
-                userVm.DepartmentId = obj.DepartmentId;
-                userVm.RoleId = obj.RoleId;
-                userVm.Password = "123456";
+                CreateUserVm userVm = new()
+                {
+                    FullName = obj.FullName,
+                    Username = obj.Username,
+                    DepartmentId = obj.DepartmentId,
+                    RoleId = obj.RoleId,
+                    Password = "123456"
+                };
                 HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/api/Auth/RegisterUserVm", userVm);
                 if (response.IsSuccessStatusCode)
                     return Json(new { success = true, message = "Tạo mới dữ liệu thành công" });
@@ -74,15 +74,6 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
                     return Json(new { success = true, message = "Cập nhật dữ liệu thành công" });
                 else return Json(new { success = false, message = "Có lỗi cập nhật dữ liệu" });
             }
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> Delete(int id)
-        {
-            HttpResponseMessage response = await _httpClient.DeleteAsync(apiUrl + "/" + id);
-            if (response.IsSuccessStatusCode)
-                return Json(new { success = true, message = "Xóa dữ liệu thành công" });
-            else return Json(new { success = false, message = "Có lỗi xóa dữ liệu" });
         }
 
         private async Task<List<Department>> DepartmentList()

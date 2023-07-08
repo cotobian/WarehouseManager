@@ -3,12 +3,12 @@ using Newtonsoft.Json;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.WebPortal.Controllers;
 
-namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
+namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
 {
-    [Area("Admin")]
-    public class RoleController : BaseController<Role>
+    [Area("Index")]
+    public class DepotController : BaseController<Depot>
     {
-        public RoleController(IConfiguration configuration, ILogger<WebPortal.Controllers.HomeController> logger) : base(configuration, logger)
+        public DepotController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
         {
         }
 
@@ -18,26 +18,26 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetAllRole()
+        public async Task<JsonResult> GetAllDepot()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<Role> list = JsonConvert.DeserializeObject<List<Role>>(responseBody).Where(c => c.Status == true).ToList();
+            List<Depot> list = JsonConvert.DeserializeObject<List<Depot>>(responseBody).Where(c => c.Status == true).ToList();
             return Json(new { data = list });
         }
 
         [HttpGet]
         public async Task<ActionResult> AddOrEdit(int id = 0)
         {
-            if (id == 0) return View(new Role());
+            if (id == 0) return View(new Depot());
             else
             {
                 HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/" + id);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                Role Role = JsonConvert.DeserializeObject<Role>(responseBody);
-                return View(Role);
+                Depot depot = JsonConvert.DeserializeObject<Depot>(responseBody);
+                return View(depot);
             }
         }
     }

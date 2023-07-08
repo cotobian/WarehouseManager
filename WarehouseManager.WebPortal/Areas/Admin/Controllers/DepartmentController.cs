@@ -14,8 +14,6 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
         {
         }
 
-        private string apiUrl = "/api/Departments";
-
         public IActionResult Index()
         {
             return View();

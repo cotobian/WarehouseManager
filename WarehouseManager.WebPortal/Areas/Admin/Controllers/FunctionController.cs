@@ -45,26 +45,6 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<JsonResult> AddOrEdit(Function obj)
-        {
-            if (obj.Id == 0)
-            {
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl, obj);
-                if (response.IsSuccessStatusCode)
-                    return Json(new { success = true, message = "Tạo mới dữ liệu thành công" });
-                else return Json(new { success = false, message = "Có lỗi tạo dữ liệu" });
-            }
-            else
-            {
-                var data = new { item = obj, id = obj.Id };
-                HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiUrl, data);
-                if (response.IsSuccessStatusCode)
-                    return Json(new { success = true, message = "Cập nhật dữ liệu thành công" });
-                else return Json(new { success = false, message = "Có lỗi cập nhật dữ liệu" });
-            }
-        }
-
         private async Task<List<Function>> GetParentList()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/Parent");
@@ -73,15 +53,6 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
             List<Function> functions = JsonConvert.DeserializeObject<List<Function>>(responseBody);
             List<Function> parentFunction = functions.Where(c => c.ParentId == null).ToList();
             return parentFunction;
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> Delete(int id)
-        {
-            HttpResponseMessage response = await _httpClient.DeleteAsync(apiUrl + "/" + id);
-            if (response.IsSuccessStatusCode)
-                return Json(new { success = true, message = "Xóa dữ liệu thành công" });
-            else return Json(new { success = false, message = "Có lỗi xóa dữ liệu" });
         }
     }
 }

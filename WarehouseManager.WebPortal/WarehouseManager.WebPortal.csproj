@@ -1879,7 +1879,6 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Index\Controllers\" />
     <Folder Include="Areas\Index\Data\" />
     <Folder Include="Areas\Index\Models\" />
     <Folder Include="Areas\Trucking\Controllers\" />

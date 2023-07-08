@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Reflection;
+using WarehouseManager.BackendServer.Data.Entities;
 
 namespace WarehouseManager.WebPortal.Controllers
 {
@@ -22,6 +22,8 @@ namespace WarehouseManager.WebPortal.Controllers
             _logger = logger;
         }
 
+        public readonly string apiUrl = "/api/" + typeof(T).Name + "s";
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             string accessToken = HttpContext.Session.GetString("JwtToken");
@@ -32,6 +34,37 @@ namespace WarehouseManager.WebPortal.Controllers
             }
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             base.OnActionExecuting(context);
+        }
+
+        [HttpPost]
+        public virtual async Task<JsonResult> AddOrEdit(T obj)
+        {
+            PropertyInfo idProperty = typeof(T).GetProperty("Id");
+            int? Id = (int?)idProperty.GetValue(obj);
+            if (Id == 0 || Id == null)
+            {
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl, obj);
+                if (response.IsSuccessStatusCode)
+                    return Json(new { success = true, message = "Tạo mới dữ liệu thành công" });
+                else return Json(new { success = false, message = "Có lỗi tạo dữ liệu" });
+            }
+            else
+            {
+                var data = new { item = obj, id = Id };
+                HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiUrl, data);
+                if (response.IsSuccessStatusCode)
+                    return Json(new { success = true, message = "Cập nhật dữ liệu thành công" });
+                else return Json(new { success = false, message = "Có lỗi cập nhật dữ liệu" });
+            }
+        }
+
+        [HttpGet]
+        public virtual async Task<JsonResult> Delete(int id)
+        {
+            HttpResponseMessage response = await _httpClient.DeleteAsync(apiUrl + "/" + id);
+            if (response.IsSuccessStatusCode)
+                return Json(new { success = true, message = "Xóa dữ liệu thành công" });
+            else return Json(new { success = false, message = "Có lỗi xóa dữ liệu" });
         }
     }
 }
