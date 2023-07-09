@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using WarehouseManager.BackendServer.Data.Entities;
+using WarehouseManager.ViewModels.Constants;
 using WarehouseManager.WebPortal.Controllers;
 
-namespace WarehouseManager.WebPortal.Areas.Index.Controllers
+namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
 {
-    [Area("Index")]
-    public class AgentController : BaseController<Agent>
+    [Area("Warehouse")]
+    public class CurrentPositionController : BaseController<CurrentPosition>
     {
-        public AgentController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
+        public CurrentPositionController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
         {
         }
 
@@ -18,26 +19,26 @@ namespace WarehouseManager.WebPortal.Areas.Index.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetAllAgent()
+        public async Task<JsonResult> GetAllCurrentPosition()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<Agent> list = JsonConvert.DeserializeObject<List<Agent>>(responseBody).Where(c => c.Status == true).ToList();
+            List<CurrentPosition> list = JsonConvert.DeserializeObject<List<CurrentPosition>>(responseBody).Where(c => c.Status != CurrentPositionStatus.Deleted).ToList();
             return Json(new { data = list });
         }
 
         [HttpGet]
         public async Task<ActionResult> AddOrEdit(int id = 0)
         {
-            if (id == 0) return View(new Agent());
+            if (id == 0) return View(new CurrentPosition());
             else
             {
                 HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/" + id);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                Agent agent = JsonConvert.DeserializeObject<Agent>(responseBody);
-                return View(agent);
+                CurrentPosition currentPosition = JsonConvert.DeserializeObject<CurrentPosition>(responseBody);
+                return View(currentPosition);
             }
         }
     }

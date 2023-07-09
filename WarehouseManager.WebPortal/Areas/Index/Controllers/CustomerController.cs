@@ -6,9 +6,9 @@ using WarehouseManager.WebPortal.Controllers;
 namespace WarehouseManager.WebPortal.Areas.Index.Controllers
 {
     [Area("Index")]
-    public class AgentController : BaseController<Agent>
+    public class CustomerController : BaseController<Customer>
     {
-        public AgentController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
+        public CustomerController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
         {
         }
 
@@ -18,26 +18,26 @@ namespace WarehouseManager.WebPortal.Areas.Index.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetAllAgent()
+        public async Task<JsonResult> GetAllCustomer()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<Agent> list = JsonConvert.DeserializeObject<List<Agent>>(responseBody).Where(c => c.Status == true).ToList();
+            List<Customer> list = JsonConvert.DeserializeObject<List<Customer>>(responseBody).Where(c => c.Status == true).ToList();
             return Json(new { data = list });
         }
 
         [HttpGet]
         public async Task<ActionResult> AddOrEdit(int id = 0)
         {
-            if (id == 0) return View(new Agent());
+            if (id == 0) return View(new Customer());
             else
             {
                 HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/" + id);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                Agent agent = JsonConvert.DeserializeObject<Agent>(responseBody);
-                return View(agent);
+                Customer Customer = JsonConvert.DeserializeObject<Customer>(responseBody);
+                return View(Customer);
             }
         }
     }

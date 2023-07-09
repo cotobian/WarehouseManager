@@ -3,12 +3,12 @@ using Newtonsoft.Json;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.WebPortal.Controllers;
 
-namespace WarehouseManager.WebPortal.Areas.Index.Controllers
+namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
 {
-    [Area("Index")]
-    public class AgentController : BaseController<Agent>
+    [Area("Warehouse")]
+    public class TallyJobController : BaseController<TallyJob>
     {
-        public AgentController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
+        public TallyJobController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
         {
         }
 
@@ -18,26 +18,26 @@ namespace WarehouseManager.WebPortal.Areas.Index.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetAllAgent()
+        public async Task<JsonResult> GetAllTallyJob()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<Agent> list = JsonConvert.DeserializeObject<List<Agent>>(responseBody).Where(c => c.Status == true).ToList();
+            List<TallyJob> list = JsonConvert.DeserializeObject<List<TallyJob>>(responseBody).ToList();
             return Json(new { data = list });
         }
 
         [HttpGet]
         public async Task<ActionResult> AddOrEdit(int id = 0)
         {
-            if (id == 0) return View(new Agent());
+            if (id == 0) return View(new TallyJob());
             else
             {
                 HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/" + id);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                Agent agent = JsonConvert.DeserializeObject<Agent>(responseBody);
-                return View(agent);
+                TallyJob TallyJob = JsonConvert.DeserializeObject<TallyJob>(responseBody);
+                return View(TallyJob);
             }
         }
     }

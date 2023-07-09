@@ -22,7 +22,7 @@ namespace WarehouseManager.WebPortal.Controllers
             _logger = logger;
         }
 
-        public readonly string apiUrl = "/api/" + typeof(T).Name + "s";
+        public readonly string apiUrl = "/api/" + typeof(T).Name;
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {

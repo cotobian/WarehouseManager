@@ -63,6 +63,10 @@ app.UseEndpoints(endpoints =>
         name: "Index",
         pattern: "Index/{controller}/{action=Index}"
     );
+    endpoints.MapControllerRoute(
+        name: "Warehouse",
+        pattern: "Warehouse/{controller}/{action=Index}"
+    );
 });
 
 app.Run();

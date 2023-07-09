@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using WarehouseManager.BackendServer.Data.Entities;
+using WarehouseManager.ViewModels.Constants;
 using WarehouseManager.WebPortal.Controllers;
 
-namespace WarehouseManager.WebPortal.Areas.Index.Controllers
+namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
 {
-    [Area("Index")]
-    public class AgentController : BaseController<Agent>
+    [Area("Warehouse")]
+    public class DeliveryOrderController : BaseController<DeliveryOrder>
     {
-        public AgentController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
+        public DeliveryOrderController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
         {
         }
 
@@ -18,26 +19,27 @@ namespace WarehouseManager.WebPortal.Areas.Index.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetAllAgent()
+        public async Task<JsonResult> GetAllDeliveryOrder()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<Agent> list = JsonConvert.DeserializeObject<List<Agent>>(responseBody).Where(c => c.Status == true).ToList();
+            List<DeliveryOrder> list = JsonConvert.DeserializeObject<List<DeliveryOrder>>(responseBody).Where(c => c.OrderStatus != OrderStatus.Deleted).ToList();
+
             return Json(new { data = list });
         }
 
         [HttpGet]
         public async Task<ActionResult> AddOrEdit(int id = 0)
         {
-            if (id == 0) return View(new Agent());
+            if (id == 0) return View(new DeliveryOrder());
             else
             {
                 HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/" + id);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                Agent agent = JsonConvert.DeserializeObject<Agent>(responseBody);
-                return View(agent);
+                DeliveryOrder DeliveryOrder = JsonConvert.DeserializeObject<DeliveryOrder>(responseBody);
+                return View(DeliveryOrder);
             }
         }
     }

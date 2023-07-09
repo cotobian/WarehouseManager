@@ -13,8 +13,6 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
         {
         }
 
-        private string apiUrl = "/api/Functions";
-
         public IActionResult Index()
         {
             return View();
