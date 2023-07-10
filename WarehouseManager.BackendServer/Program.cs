@@ -82,15 +82,15 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 
-app.Use(async (context, next) =>
-{
-    await next();
+//app.Use(async (context, next) =>
+//{
+//    await next();
 
-    if (context.Response.StatusCode == (int)System.Net.HttpStatusCode.Unauthorized)
-    {
-        await context.Response.WriteAsync("Token Validation Has Failed. Request Access Denied");
-    }
-});
+//    if (context.Response.StatusCode == (int)System.Net.HttpStatusCode.Unauthorized)
+//    {
+//        await context.Response.WriteAsync("Token Validation Has Failed. Request Access Denied");
+//    }
+//});
 
 app.UseAuthentication();
 

@@ -14,6 +14,7 @@
                     <tr>
                         <th>Tên chức năng</th>
                         <th>Đường dẫn URL</th>
+                        <th>Controller</th>
                         <th>Chức năng cha</th>
                         <th>Thứ tự Hiển thị</th>
                         <th>Sửa</th>
@@ -37,8 +38,9 @@
                     "datatype": "json",
                 },
                 "columns": [
-                    { "data": "functionName" },
+                    { "data": "name" },
                     { "data": "url" },
+                    { "data": "controller" },
                     { "data": "parentId" },
                     { "data": "sortOrder" },
                     {
@@ -72,7 +74,7 @@
                     autoOpen: true,
                     resizeable: false,
                     title: 'Nhập thông tin chức năng',
-                    height: 470,
+                    height: 570,
                     width: 600,
                     close: function () {
                         Popup.dialog('destroy').remove();
@@ -101,7 +103,7 @@
                         dataTable.ajax.reload();
                         $.notify(data.message, {
                             globalPosition: "top center",
-                            className: "failure"
+                            className: "error"
                         })
                     }
                 }
@@ -126,7 +128,7 @@
                             dataTable.ajax.reload();
                             $.notify(data.message, {
                                 globalPosition: "top center",
-                                className: "failure"
+                                className: "error"
                             })
                         }
                     }

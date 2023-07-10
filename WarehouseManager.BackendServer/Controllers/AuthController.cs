@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -9,6 +10,7 @@ using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.ViewModels;
 using WarehouseManager.ViewModels.Admin.User;
+using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Controllers
 {
@@ -56,12 +58,17 @@ namespace WarehouseManager.BackendServer.Controllers
             }
         }
 
-        private string CreateToken(User user)
+        private async Task<string> CreateTokenAsync(User user)
         {
+            var query = from up in _context.UserPermissions
+                        where up.UserId == user.Id && up.Status == true
+                        select up.FunctionId + "_" + up.Command;
+            var permissions = await query.Distinct().ToListAsync();
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(SystemConstants.Permissions, JsonConvert.SerializeObject(permissions))
             };
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8
                 .GetBytes(_configuration.GetSection("AppSettings:Token").Value));
@@ -135,7 +142,8 @@ namespace WarehouseManager.BackendServer.Controllers
                 return BadRequest("Sai mật khẩu!");
             else
             {
-                return Ok(CreateToken(user));
+                string token = await CreateTokenAsync(user);
+                return Ok(token);
             }
         }
 

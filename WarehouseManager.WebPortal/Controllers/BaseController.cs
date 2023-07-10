@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net.Http.Headers;
 using System.Reflection;
-using WarehouseManager.BackendServer.Data.Entities;
 
 namespace WarehouseManager.WebPortal.Controllers
 {
@@ -45,16 +44,31 @@ namespace WarehouseManager.WebPortal.Controllers
             {
                 HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl, obj);
                 if (response.IsSuccessStatusCode)
+                {
                     return Json(new { success = true, message = "Tạo mới dữ liệu thành công" });
-                else return Json(new { success = false, message = "Có lỗi tạo dữ liệu" });
+                }
+                else
+                {
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrEmpty(errorContent))
+                        return Json(new { success = false, message = "Có lỗi tạo mới dữ liệu" });
+                    else
+                        return Json(new { success = false, message = errorContent });
+                }
             }
             else
             {
-                var data = new { item = obj, id = Id };
-                HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiUrl, data);
+                HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiUrl + "/" + Id, obj);
                 if (response.IsSuccessStatusCode)
                     return Json(new { success = true, message = "Cập nhật dữ liệu thành công" });
-                else return Json(new { success = false, message = "Có lỗi cập nhật dữ liệu" });
+                else
+                {
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrEmpty(errorContent))
+                        return Json(new { success = false, message = "Có lỗi cập nhật dữ liệu" });
+                    else
+                        return Json(new { success = false, message = errorContent });
+                }
             }
         }
 
@@ -64,7 +78,14 @@ namespace WarehouseManager.WebPortal.Controllers
             HttpResponseMessage response = await _httpClient.DeleteAsync(apiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
                 return Json(new { success = true, message = "Xóa dữ liệu thành công" });
-            else return Json(new { success = false, message = "Có lỗi xóa dữ liệu" });
+            else
+            {
+                string errorContent = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(errorContent))
+                    return Json(new { success = false, message = "Có lỗi xóa dữ liệu" });
+                else
+                    return Json(new { success = false, message = errorContent });
+            }
         }
     }
 }

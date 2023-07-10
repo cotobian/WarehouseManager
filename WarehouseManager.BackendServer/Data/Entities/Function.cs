@@ -12,10 +12,13 @@ namespace WarehouseManager.BackendServer.Data.Entities
 
         [Required]
         [Column(TypeName = "nvarchar(200)")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [MaxLength(200)]
-        public string Url { get; set; }
+        public string? Url { get; set; }
+
+        [MaxLength(30)]
+        public string? Controller { get; set; }
 
         public int? SortOrder { get; set; }
         public int? ParentId { get; set; }

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using WarehouseManager.BackendServer.Authorization;
 using WarehouseManager.BackendServer.Data;
+using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Controllers
 {
@@ -21,7 +24,9 @@ namespace WarehouseManager.BackendServer.Controllers
         }
 
         [HttpGet]
+        [ClaimRequirement(Command.READ)]
         public virtual async Task<IActionResult> GetAll()
+
         {
             return Ok(await _context.Set<T>().ToListAsync());
         }
@@ -35,22 +40,55 @@ namespace WarehouseManager.BackendServer.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> Post(T item)
         {
-            _context.Set<T>().Add(item);
-            await _context.SaveChangesAsync();
-            return Ok(item);
+            string typeName = typeof(T).Name;
+            string validatorTypeName = typeName + "Validator";
+            var validatorType = typeof(Program).Assembly.GetTypes().FirstOrDefault(t => t.Name == validatorTypeName);
+            if (validatorType != null)
+            {
+                var validator = Activator.CreateInstance(validatorType);
+                var validateMethod = validatorType.GetMethod("Validate", new[] { typeof(T) });
+                var results = (ValidationResult)validateMethod.Invoke(validator, new[] { item });
+
+                if (results.IsValid)
+                {
+                    _context.Set<T>().Add(item);
+                    await _context.SaveChangesAsync();
+                    return Ok(item);
+                }
+                else return BadRequest($"Property '{results.Errors[0].PropertyName}': {results.Errors[0].ErrorMessage}");
+            }
+            else return BadRequest("Validator not found");
         }
 
         [HttpPut("{id}")]
-        public virtual async Task<IActionResult> Put(int id, T item)
+        public virtual async Task<IActionResult> Put(T item)
         {
-            T res = await _context.Set<T>().FindAsync(id);
-            if (res != null)
+            PropertyInfo idProperty = typeof(T).GetProperty("Id");
+            int? id = (int?)idProperty.GetValue(item);
+            string typeName = typeof(T).Name;
+            string validatorTypeName = typeName + "Validator";
+            var validatorType = typeof(Program).Assembly.GetTypes().FirstOrDefault(t => t.Name == validatorTypeName);
+            if (validatorType != null)
             {
-                res = item;
-                await _context.SaveChangesAsync();
-                return Ok(res);
+                var validator = Activator.CreateInstance(validatorType);
+                var validateMethod = validatorType.GetMethod("Validate", new[] { typeof(T) });
+                var results = (ValidationResult)validateMethod.Invoke(validator, new[] { item });
+
+                if (results.IsValid)
+                {
+                    T res = await _context.Set<T>().FindAsync(id);
+                    if (res != null)
+                    {
+                        _context.Entry(res).CurrentValues.SetValues(item);
+
+                        await _context.SaveChangesAsync();
+                        return Ok(res);
+                    }
+                    else return NotFound();
+                }
+                else return BadRequest($"Property '{results.Errors[0].PropertyName}': {results.Errors[0].ErrorMessage}");
             }
-            else return NotFound();
+            else return BadRequest("Validator not found");
         }
 
         [HttpDelete("{id}")]
@@ -64,11 +102,11 @@ namespace WarehouseManager.BackendServer.Controllers
                 {
                     statusProperty.SetValue(res, false);
                     await _context.SaveChangesAsync();
-                    return NoContent();
+                    return Ok();
                 }
                 else return BadRequest("No Status field");
             }
-            else return NotFound();
+            else return BadRequest("No record found");
         }
     }
 }

@@ -10,6 +10,7 @@ namespace WarehouseManager.BackendServer.Data.Validators
             RuleFor(x => x.Name).NotEmpty().WithMessage("Function name cannot be null")
                 .MaximumLength(200).WithMessage("Function name length cannot exceed 200 characters");
             RuleFor(x => x.Url).MaximumLength(200).WithMessage("Url length cannot exceed 200 characters");
+            RuleFor(x => x.Controller).MaximumLength(30).WithMessage("Controller cannot exceed 30 characters");
         }
     }
 }

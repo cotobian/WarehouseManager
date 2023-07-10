@@ -14,6 +14,10 @@
         @Html.EditorFor(model => model.Url, new { htmlAttributes = new { @class = "form-control" } })
     </div>
     <div class="form-group">
+        <label class="control-label">Controller</label>
+        @Html.EditorFor(model => model.Controller, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
         <label class="control-label">Chức năng cha</label>
         @Html.DropDownListFor(model => model.ParentId, new SelectList(ViewBag.ParentList, "Id", "Name"), "--Chọn Chức năng--", new { @class = "form-control" } )
     </div>
