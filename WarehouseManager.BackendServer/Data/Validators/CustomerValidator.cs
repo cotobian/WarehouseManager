@@ -13,8 +13,6 @@ namespace WarehouseManager.BackendServer.Data.Validators
                 .WithMessage("Customer address length cannot exceeed 500 characters");
             RuleFor(x => x.PhoneNumber).MaximumLength(50)
                 .WithMessage("Phone number length cannot exceed 50 characters");
-            RuleFor(x => x.Fax).MaximumLength(50)
-                .WithMessage("Fax length cannot exceed 50 characters");
             RuleFor(x => x.Email).MaximumLength(50)
                 .WithMessage("Email length cannot exceed 50 characters");
             RuleFor(x => x.Website).MaximumLength(50)

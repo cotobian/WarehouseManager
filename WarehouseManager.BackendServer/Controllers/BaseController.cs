@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using System.Reflection;
-using WarehouseManager.BackendServer.Authorization;
 using WarehouseManager.BackendServer.Data;
-using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Controllers
 {
@@ -24,11 +23,16 @@ namespace WarehouseManager.BackendServer.Controllers
         }
 
         [HttpGet]
-        [ClaimRequirement(Command.READ)]
         public virtual async Task<IActionResult> GetAll()
 
         {
             return Ok(await _context.Set<T>().ToListAsync());
+        }
+
+        [HttpGet("predicate/{predicate}")]
+        public async Task<IActionResult> GetPredicate(Expression<Func<T, bool>> predicate)
+        {
+            return Ok(await _context.Set<T>().Where(predicate).ToListAsync());
         }
 
         [HttpGet("{id}")]

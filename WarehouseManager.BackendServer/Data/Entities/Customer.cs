@@ -14,22 +14,19 @@ namespace WarehouseManager.BackendServer.Data.Entities
         public string Name { get; set; }
 
         [Column(TypeName = "nvarchar(500)")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [MaxLength(50)]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [MaxLength(50)]
-        public string Fax { get; set; }
+        public string? Email { get; set; }
 
         [MaxLength(50)]
-        public string Email { get; set; }
-
-        [MaxLength(50)]
-        public string Website { get; set; }
+        public string? Website { get; set; }
 
         [Column(TypeName = "nvarchar(200)")]
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         public bool Status { get; set; } = true;
     }

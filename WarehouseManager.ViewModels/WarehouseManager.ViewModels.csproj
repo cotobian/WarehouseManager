@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Admin\Function\" />
+    <Folder Include="Admin\Function\" />
     <Folder Include="Index\" />
     <Folder Include="Trucking\" />
     <Folder Include="Warehouse\" />

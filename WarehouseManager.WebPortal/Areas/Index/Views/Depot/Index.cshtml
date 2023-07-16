@@ -29,16 +29,16 @@
         $(document).ready(function () {
             dataTable = $("#truckTable").DataTable({
                 "ajax": {  
-                    "url": "Agent/GetAllAgent",
+                    "url": "Depot/GetAllDepot",
                     "type": "GET",
                     "datatype": "json",
                 },
                 "columns": [
                     { "data": "name" },
-                    { "data": "shortName" },
+                    { "data": "depotCode" },
                     {
                         "data": "id", "render": function (data) {
-                            return "<i class='fa fa-pencil-alt f-18 text-success' onclick=PopupForm('Agent/AddOrEdit?id=" + data + "')><i/>";
+                            return "<i class='fa fa-pencil-alt f-18 text-success' onclick=PopupForm('Depot/AddOrEdit?id=" + data + "')><i/>";
                         },
                         "orderable": false,
                         "searchable": false,
@@ -66,8 +66,8 @@
                     Popup = formDiv.dialog({
                         autoOpen: true,
                         resizeable: false,
-                        title: 'Nhập thông tin đại lý',
-                        height: 470,
+                        title: 'Nhập thông tin Depot',
+                        height: 300,
                         width: 600,
                         close: function () {
                             Popup.dialog('destroy').remove();
@@ -103,10 +103,10 @@
         }
 
         function Delete(id) {
-            if (confirm("Bạn có muốn xóa đại lý này không?")) {
+            if (confirm("Bạn có muốn xóa Depot này không?")) {
                 $.ajax({
                     type: "GET",
-                    url: 'Agent/Delete?id=' + id,
+                    url: 'Depot/Delete?id=' + id,
                     success: function (data) {
                         if (data.success) {
                             dataTable.ajax.reload();

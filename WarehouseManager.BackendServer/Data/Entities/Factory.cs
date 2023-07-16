@@ -14,7 +14,7 @@ namespace WarehouseManager.BackendServer.Data.Entities
         public string Name { get; set; } = string.Empty;
 
         [Column(TypeName = "nvarchar(500)")]
-        public string Address { get; set; } = string.Empty;
+        public string? Address { get; set; }
 
         public bool Status { get; set; } = true;
     }

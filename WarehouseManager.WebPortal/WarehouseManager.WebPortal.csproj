@@ -1884,6 +1884,7 @@
     <Folder Include="Areas\Trucking\Controllers\" />
     <Folder Include="Areas\Trucking\Data\" />
     <Folder Include="Areas\Trucking\Models\" />
+    <Folder Include="Areas\Trucking\Controllers\" />
     <Folder Include="Areas\Warehouse\Data\" />
     <Folder Include="Areas\Warehouse\Models\" />
     <Folder Include="wwwroot\css\images\" />
