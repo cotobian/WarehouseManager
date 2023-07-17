@@ -78,7 +78,7 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
 
         private async Task<List<Department>> DepartmentList()
         {
-            HttpResponseMessage response = await _httpClient.GetAsync("/api/Departments");
+            HttpResponseMessage response = await _httpClient.GetAsync("/api/Department");
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             List<Department> departments = JsonConvert.DeserializeObject<List<Department>>(responseBody);
@@ -87,7 +87,7 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
 
         private async Task<List<Role>> RoleList()
         {
-            HttpResponseMessage response = await _httpClient.GetAsync("/api/Roles");
+            HttpResponseMessage response = await _httpClient.GetAsync("/api/Role");
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             List<Role> roles = JsonConvert.DeserializeObject<List<Role>>(responseBody);

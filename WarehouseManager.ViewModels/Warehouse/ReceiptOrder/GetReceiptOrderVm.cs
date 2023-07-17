@@ -1,49 +1,38 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using WarehouseManager.ViewModels.Constants;
+﻿using WarehouseManager.ViewModels.Constants;
 
-namespace WarehouseManager.BackendServer.Data.Entities
+namespace WarehouseManager.ViewModels.Warehouse.ReceiptOrder
 {
-    [Table("ReceiptOrders")]
-    public class ReceiptOrder
+    public class GetReceiptOrderVm
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        [Required, MaxLength(30)]
         public string OrderNo { get; set; } = string.Empty;
-
         public int? AgentId { get; set; }
+        public string AgentName { get; set; } = string.Empty;
 
         public int? CustomerId { get; set; }
 
-        [MaxLength(20)]
+        public string CustomerName { get; set; } = string.Empty;
+
         public string? TruckNo { get; set; }
 
-        [MaxLength(20)]
         public string? CntrNo { get; set; }
 
-        [MaxLength(20)]
         public string? SealNo { get; set; }
 
-        [MaxLength(50)]
         public string? Booking { get; set; }
 
         public decimal Weight { get; set; } = 0;
 
         public decimal CBM { get; set; } = 0;
 
-        [Column(TypeName = "nvarchar(50)")]
         public string? Commodity { get; set; }
 
-        [MaxLength(50)]
         public string? CustomDeclareNo { get; set; }
 
         public int CreatedUserId { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        public OrderStatus OrderStatus { get; set; } = OrderStatus.Created;
+        public OrderStatus OrderStatus { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
     [Area("Admin")]
     public class RoleController : BaseController<Role>
     {
-        public RoleController(IConfiguration configuration, ILogger<WebPortal.Controllers.HomeController> logger) : base(configuration, logger)
+        public RoleController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
         {
         }
 

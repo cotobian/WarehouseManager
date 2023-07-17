@@ -29,11 +29,11 @@ namespace WarehouseManager.BackendServer.Controllers
             return Ok(await _context.Set<T>().ToListAsync());
         }
 
-        [HttpGet("predicate/{predicate}")]
-        public async Task<IActionResult> GetPredicate(Expression<Func<T, bool>> predicate)
-        {
-            return Ok(await _context.Set<T>().Where(predicate).ToListAsync());
-        }
+        //[HttpPost("predicate")]
+        //public async Task<IActionResult> GetPredicate(Expression<Func<T, bool>> predicate)
+        //{
+        //    return Ok(await _context.Set<T>().Where(predicate).ToListAsync());
+        //}
 
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> GetById(int id)

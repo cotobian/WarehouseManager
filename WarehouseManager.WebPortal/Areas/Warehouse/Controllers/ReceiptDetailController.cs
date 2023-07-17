@@ -13,8 +13,9 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         {
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int orderid = 0)
         {
+            ViewBag.OrderId = orderid;
             return View();
         }
 
@@ -25,7 +26,6 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             List<ReceiptDetail> list = JsonConvert.DeserializeObject<List<ReceiptDetail>>(responseBody).Where(c => c.Status != false).ToList();
-
             return Json(new { data = list });
         }
 

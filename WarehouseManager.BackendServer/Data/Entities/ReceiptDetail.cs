@@ -10,16 +10,18 @@ namespace WarehouseManager.BackendServer.Data.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        public int OrderId { get; set; }
+
         [Required, MaxLength(100)]
-        public string PO { get; set; }
+        public string PO { get; set; } = string.Empty;
 
         [MaxLength(50)]
-        public string Item { get; set; }
+        public string? Item { get; set; }
 
         [Required]
         public int ExpectedQuantity { get; set; }
 
-        public int ReceivedQuantity { get; set; } = 0;
+        public int? ReceivedQuantity { get; set; }
 
         [Required]
         public int UnitId { get; set; }
@@ -30,10 +32,7 @@ namespace WarehouseManager.BackendServer.Data.Entities
         public decimal CBM { get; set; } = 0;
 
         [Column(TypeName = "nvarchar(200)")]
-        public string Trouble { get; set; }
-
-        [Column(TypeName = "nvarchar(200)")]
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         public bool Status { get; set; } = true;
     }
