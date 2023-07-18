@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.Security.Claims;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.BackendServer.Data.Validators;
@@ -16,17 +15,6 @@ namespace WarehouseManager.BackendServer.Controllers
     {
         public ReceiptOrderController(WhContext context, IConfiguration configuration) : base(context, configuration)
         {
-        }
-
-        private int GetUserId()
-        {
-            var nameIdentifierClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (nameIdentifierClaim != null)
-            {
-                int userId = int.Parse(nameIdentifierClaim.Value);
-                return userId;
-            }
-            else return 0;
         }
 
         [HttpGet]

@@ -1,6 +1,6 @@
 ﻿namespace WarehouseManager.ViewModels.Constants
 {
-    public enum ForkLiftJobStatus
+    public enum JobStatus
     {
         Created, Processing, Completed, Deleted, Troubled
     }

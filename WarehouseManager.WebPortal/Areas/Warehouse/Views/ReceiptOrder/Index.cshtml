@@ -18,10 +18,7 @@
                         <th>Số cont</th>
                         <th>Số chì</th>
                         <th>Booking</th>
-                        <th>Khối lượng</th>
-                        <th>CBM</th>
                         <th>Loại hàng</th>
-                        <th>Số tờ khai HQ</th>
                         <th>Chi tiết</th>
                         <th>Sửa</th>
                         <th>Xóa</th>
@@ -51,10 +48,7 @@
                     { "data": "cntrNo" },
                     { "data": "sealNo" },
                     { "data": "booking" },
-                    { "data": "weight" },
-                    { "data": "cbm" },
                     { "data": "commodity" },
-                    { "data": "customDeclareNo" },
                     {
                         "data": "id", "render": function (data) {
                             return "<i class='fa fa-info-circle f-18 text-primary' onclick=Detail('" + data + "')><i/>";
@@ -131,7 +125,7 @@
         }
 
         function Detail(id) {
-            window.location.href = "ReceiptDetail/Index?oderid=" + id;
+            window.location.href = "ReceiptDetail/Index?orderid=" + id;
         }
 
         function Delete(id) {

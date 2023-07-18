@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WarehouseManager.BackendServer.Data;
 
@@ -11,9 +12,10 @@ using WarehouseManager.BackendServer.Data;
 namespace WarehouseManager.BackendServer.Migrations
 {
     [DbContext(typeof(WhContext))]
-    partial class WhContextModelSnapshot : ModelSnapshot
+    [Migration("20230718041130_UpdateDelivery1807")]
+    partial class UpdateDelivery1807
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,12 +159,6 @@ namespace WarehouseManager.BackendServer.Migrations
                     b.Property<string>("CntrNo")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("DelivererName")
                         .HasColumnType("nvarchar(50)");

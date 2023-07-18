@@ -1,27 +1,25 @@
 ﻿@{
     ViewData["Title"] = "Chi tiết Lệnh nhập";
 }
-
 <div class="card">
     <div class="card-header">
         <h3>Chi tiết Lệnh nhập</h3>
     </div>
     <div class="card-body">
         <div class="container-fluid">
-            <a class="btn btn-success" style="margin-bottom:10px;" onclick="PopupForm('ReceiptDetail/AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
-            <a class="btn btn-primary" style="margin-bottom:10px;" onclick="CreateTallyJob()"><i class="fa fa-file-text"></i> Tạo job</a>
-            <table id="truckTable" class="table table-striped table-bDetailed" style="width:100%">
+            <a class="btn btn-success" style="margin-bottom:10px;" onclick="PopupForm('AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
+            <a class="btn btn-warning" style="margin-bottom:10px;" onclick="PrintAllSheet()"><i class="fa fa-print"></i> In pallet</a>
+            <a class="btn btn-primary" style="margin-bottom:10px;" onclick="CreateAllTallyJob()"><i class="fa fa-tasks"></i> Tạo job</a>
+            <table id="truckTable" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
                         <th>PO</th>
                         <th>Item</th>
-                        <th>Số nhận</th>
-                        <th>Số thực</th>
+                        <th>Chứng từ</th>
+                        <th>Thực nhập</th>
                         <th>Đơn vị</th>
-                        <th>Dài</th>
-                        <th>Rộng</th>
-                        <th>Cao</th>
-                        <th>CBM</th>
+                        <th>In Pallet</th>
+                        <th>Tạo job</th>
                         <th>Sửa</th>
                         <th>Xóa</th>
                     </tr>
@@ -37,7 +35,7 @@
         $(document).ready(function () {
             dataTable = $("#truckTable").DataTable({
                 "ajax": {
-                    "url": "ReceiptDetail/GetAllReceiptDetail?orderid=" + @ViewBag.OrderId,
+                    "url": "GetReceiptDetailByOrder?orderid=" + @ViewBag.OrderId,
                     "type": "GET",
                     "datatype": "json",
                 },
@@ -47,13 +45,27 @@
                     { "data": "expectedQuantity" },
                     { "data": "receivedQuantity" },
                     { "data": "unitName" },
-                    { "data": "length" },
-                    { "data": "width" },
-                    { "data": "height" },
-                    { "data": "cbm" },
                     {
                         "data": "id", "render": function (data) {
-                            return "<i class='fa fa-pencil-alt f-18 text-success' onclick=PopupForm('ReceiptDetail/AddOrEdit?id=" + data + "')><i/>";
+                            return "<i class='fa fa-print f-18 text-success' onclick=PrintSheet('" + data + "')><i/>";
+                        },
+                        "Detailable": false,
+                        "searchable": false,
+                        "width": "10px",
+                        "className": 'text-center'
+                    },
+                    {
+                        "data": "id", "render": function (data) {
+                            return "<i class='fa fa-tasks f-18 text-success' onclick=CreateTallyJob('" + data + "')><i/>";
+                        },
+                        "Detailable": false,
+                        "searchable": false,
+                        "width": "10px",
+                        "className": 'text-center'
+                    },
+                    {
+                        "data": "id", "render": function (data) {
+                            return "<i class='fa fa-pencil-alt f-18 text-success' onclick=PopupForm('AddOrEdit?id=" + data + "')><i/>";
                         },
                         "Detailable": false,
                         "searchable": false,
@@ -121,7 +133,7 @@
             if (confirm("Bạn có muốn xóa PO này không?")) {
                 $.ajax({
                     type: "GET",
-                    url: 'ReceiptDetail/Delete?id=' + id,
+                    url: 'Delete?id=' + id,
                     success: function (data) {
                         if (data.success) {
                             dataTable.ajax.reload();
@@ -140,6 +152,22 @@
                     }
                 });
             }
+        }
+
+        function CreateTallyJob(detailId) {
+
+        }
+
+        function CreateAllTallyJob(orderId) {
+
+        }
+
+        function PrintSheet(detailId) {
+
+        }
+
+        function PrintAllSheet(orderId) {
+
         }
     </script>
 }

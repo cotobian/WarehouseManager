@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Claims;
 using WarehouseManager.BackendServer.Data;
 
 namespace WarehouseManager.BackendServer.Controllers
@@ -20,6 +21,17 @@ namespace WarehouseManager.BackendServer.Controllers
         {
             _context = context;
             _configuration = configuration;
+        }
+
+        public int GetUserId()
+        {
+            var nameIdentifierClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (nameIdentifierClaim != null)
+            {
+                int userId = int.Parse(nameIdentifierClaim.Value);
+                return userId;
+            }
+            else return 0;
         }
 
         [HttpGet]

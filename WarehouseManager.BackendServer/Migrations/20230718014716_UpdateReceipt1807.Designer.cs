@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WarehouseManager.BackendServer.Data;
 
@@ -11,9 +12,10 @@ using WarehouseManager.BackendServer.Data;
 namespace WarehouseManager.BackendServer.Migrations
 {
     [DbContext(typeof(WhContext))]
-    partial class WhContextModelSnapshot : ModelSnapshot
+    [Migration("20230718014716_UpdateReceipt1807")]
+    partial class UpdateReceipt1807
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,29 +119,28 @@ namespace WarehouseManager.BackendServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<decimal?>("CBM")
+                    b.Property<decimal>("CBM")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("DeliveryOrderId")
+                    b.Property<int>("FactoryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PositionId")
-                        .HasColumnType("int");
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PickUpPosition")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReceiptDetailId")
+                    b.Property<int>("ReceiptDetailId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Size")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
-
-                    b.Property<decimal?>("Weight")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -155,25 +156,22 @@ namespace WarehouseManager.BackendServer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("CntrNo")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("DelivererName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("EndHour")
+                    b.Property<DateTime>("EndHour")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ExportDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Inv")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -185,20 +183,24 @@ namespace WarehouseManager.BackendServer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("OriginDO")
+                        .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("SealNo")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<DateTime?>("StartHour")
+                    b.Property<DateTime>("StartHour")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TruckNo")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -478,6 +480,9 @@ namespace WarehouseManager.BackendServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
@@ -615,26 +620,6 @@ namespace WarehouseManager.BackendServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TallyJobs");
-                });
-
-            modelBuilder.Entity("WarehouseManager.BackendServer.Data.Entities.Unit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("WarehouseManager.BackendServer.Data.Entities.User", b =>

@@ -1,6 +1,6 @@
 ﻿namespace WarehouseManager.ViewModels.Constants
 {
-    public enum ForkLiftJobType
+    public enum JobType
     {
         Inbound, Outbound, Shifting
     }

@@ -25,7 +25,6 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             List<DeliveryOrder> list = JsonConvert.DeserializeObject<List<DeliveryOrder>>(responseBody).Where(c => c.OrderStatus != OrderStatus.Deleted).ToList();
-
             return Json(new { data = list });
         }
 

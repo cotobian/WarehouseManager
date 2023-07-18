@@ -12,35 +12,36 @@ namespace WarehouseManager.BackendServer.Data.Entities
         public int Id { get; set; }
 
         [Required]
-        public string OrderNo { get; set; }
+        public string OrderNo { get; set; } = string.Empty;
 
-        [Required]
-        public DateTime ExportDate { get; set; }
-
-        [Column(TypeName = "nvarchar(50)")]
-        public string DelivererName { get; set; }
+        public DateTime ExportDate { get; set; } = DateTime.Now;
 
         [Column(TypeName = "nvarchar(50)")]
-        public string OriginDO { get; set; }
+        public string? DelivererName { get; set; }
+
+        [Column(TypeName = "nvarchar(50)")]
+        public string? OriginDO { get; set; }
 
         [MaxLength(20)]
-        public string TruckNo { get; set; }
+        public string? TruckNo { get; set; }
 
         [MaxLength(20)]
-        public string CntrNo { get; set; }
+        public string? CntrNo { get; set; }
 
         [MaxLength(20)]
-        public string SealNo { get; set; }
+        public string? SealNo { get; set; }
 
         [MaxLength(20)]
-        public string Inv { get; set; }
+        public string? Inv { get; set; }
 
         [MaxLength(20)]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         public int WarehouseDoorId { get; set; }
-        public DateTime StartHour { get; set; }
-        public DateTime EndHour { get; set; }
+        public DateTime? StartHour { get; set; }
+        public DateTime? EndHour { get; set; }
+        public int CreatedUserId { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Created;
     }
 }

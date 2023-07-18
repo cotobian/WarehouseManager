@@ -40,5 +40,37 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
                 return View(TallyJob);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateByReceiptDetail(int detailId)
+        {
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/ReceiptDetail", detailId);
+            if (response.IsSuccessStatusCode)
+                return Json(new { success = true, message = "Tạo job thành công" });
+            else
+            {
+                string errorContent = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(errorContent))
+                    return Json(new { success = false, message = "Có lỗi Tạo job" });
+                else
+                    return Json(new { success = false, message = errorContent });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateByReceiptOrder(int orderId)
+        {
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/ReceiptOrder", orderId);
+            if (response.IsSuccessStatusCode)
+                return Json(new { success = true, message = "Tạo job thành công" });
+            else
+            {
+                string errorContent = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(errorContent))
+                    return Json(new { success = false, message = "Có lỗi Tạo job" });
+                else
+                    return Json(new { success = false, message = errorContent });
+            }
+        }
     }
 }

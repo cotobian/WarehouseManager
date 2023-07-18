@@ -30,15 +30,8 @@ namespace WarehouseManager.BackendServer.Data.Entities
         [MaxLength(50)]
         public string? Booking { get; set; }
 
-        public decimal Weight { get; set; } = 0;
-
-        public decimal CBM { get; set; } = 0;
-
         [Column(TypeName = "nvarchar(50)")]
         public string? Commodity { get; set; }
-
-        [MaxLength(50)]
-        public string? CustomDeclareNo { get; set; }
 
         public int CreatedUserId { get; set; }
 

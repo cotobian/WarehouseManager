@@ -23,16 +23,18 @@ namespace WarehouseManager.BackendServer.Data.Entities
 
         public int? ReceivedQuantity { get; set; }
 
+        [MaxLength(50)]
+        public string? CustomDeclareNo { get; set; }
+
         [Required]
         public int UnitId { get; set; }
 
-        public decimal Length { get; set; } = 0;
-        public decimal Width { get; set; } = 0;
-        public decimal Height { get; set; } = 0;
-        public decimal CBM { get; set; } = 0;
+        [MaxLength(50)]
+        public string? Size { get; set; }
 
-        [Column(TypeName = "nvarchar(200)")]
-        public string? Note { get; set; }
+        public decimal Weight { get; set; } = 0;
+
+        public decimal CBM { get; set; } = 0;
 
         public bool Status { get; set; } = true;
     }

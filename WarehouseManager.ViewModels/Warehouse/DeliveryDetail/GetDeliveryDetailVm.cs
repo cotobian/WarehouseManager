@@ -1,24 +1,28 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace WarehouseManager.BackendServer.Data.Entities
+namespace WarehouseManager.ViewModels.Warehouse.DeliveryDetail
 {
-    [Table("DeliveryDetails")]
-    public class DeliveryDetail
+    public class GetDeliveryDetailVm
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
         public int DeliveryOrderId { get; set; }
 
         public int? ReceiptDetailId { get; set; }
 
-        [Required]
+        public string? PO { get; set; }
+
+        public string? Item { get; set; }
+
         public int Quantity { get; set; }
 
         public int? PositionId { get; set; }
+
+        public string? PositionName { get; set; }
 
         public string? Size { get; set; }
 

@@ -33,6 +33,7 @@ namespace WarehouseManager.BackendServer.Data
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<WarehouseDoor> WarehouseDoors { get; set; }
         public DbSet<WarehousePosition> WarehousePositions { get; set; }
+        public DbSet<Unit> Units { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

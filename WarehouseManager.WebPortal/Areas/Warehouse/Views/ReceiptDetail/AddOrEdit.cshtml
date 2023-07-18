@@ -1,5 +1,49 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model WarehouseManager.BackendServer.Data.Entities.ReceiptDetail
 @{
+    Layout = null;
 }
+<form action="AddOrEdit" method="post" onsubmit="return SubmitForm(this)">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.OrderId)
+    <div class="form-group">
+        <label class="control-label">PO</label>
+        @Html.EditorFor(model => model.PO, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">Item</label>
+        @Html.EditorFor(model => model.Item, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">Đơn vị</label>
+        @Html.DropDownListFor(model => model.UnitId, new SelectList(ViewBag.UnitList, "Id", "Name"), "--Chọn Đơn vị--", new { @class = "form-control" } )
+    </div>
+    <div class="form-group">
+        <label class="control-label">Chứng từ</label>
+        @Html.EditorFor(model => model.ExpectedQuantity, new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">Thực nhập</label>
+        @Html.EditorFor(model => model.ReceivedQuantity, new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">Số tờ khai HQ</label>
+        @Html.EditorFor(model => model.CustomDeclareNo, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">Số seal</label>
+        @Html.EditorFor(model => model.Size, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">GW</label>
+        @Html.EditorFor(model => model.Weight, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">CBM</label>
+        @Html.EditorFor(model => model.CBM, new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Cập nhật" class="btn btn-primary" />
+        <input type="reset" value="Reset" class="btn btn-warning" />
+    </div>
+</form>

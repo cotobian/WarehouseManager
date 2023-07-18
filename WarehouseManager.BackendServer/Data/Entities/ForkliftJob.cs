@@ -13,9 +13,6 @@ namespace WarehouseManager.BackendServer.Data.Entities
         public int Id { get; set; }
 
         [Required]
-        public ForkLiftJobType JobType { get; set; } = ForkLiftJobType.Inbound;
-
-        [Required]
         public int PalledId { get; set; }
 
         [Required]
@@ -26,6 +23,7 @@ namespace WarehouseManager.BackendServer.Data.Entities
         public DateTime CompletedDate { get; set; }
         public int CreatedUserId { get; set; }
         public int CompletedUserId { get; set; }
-        public ForkLiftJobStatus JobStatus { get; set; } = ForkLiftJobStatus.Created;
+        public JobStatus JobStatus { get; set; } = JobStatus.Created;
+        public JobType jobType { get; set; } = JobType.Inbound;
     }
 }

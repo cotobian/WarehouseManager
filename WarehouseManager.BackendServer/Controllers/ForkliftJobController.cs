@@ -18,7 +18,7 @@ namespace WarehouseManager.BackendServer.Controllers
             ForkliftJob res = await _context.ForkliftJobs.FindAsync(id);
             if (res != null)
             {
-                res.JobStatus = ForkLiftJobStatus.Deleted;
+                res.JobStatus = JobStatus.Deleted;
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
