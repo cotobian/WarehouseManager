@@ -16,11 +16,15 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var url = Uri.parse('$SERVER_IP/data');
     return Scaffold(
       appBar: AppBar(
         title: Text("Secret Data Screen"),
+        backgroundColor: const Color(0xff764abc),
       ),
+      drawer: Drawer(
+        child: ListView(),
+      ),
+      /* ,
       body: Center(
         child: FutureBuilder(
             future: http.read(url, headers: {"Authorization": jwt}),
@@ -33,8 +37,8 @@ class HomePage extends StatelessWidget {
                   )
                 : snapshot.hasError
                     ? Text("An error occurred")
-                    : CircularProgressIndicator()),
-      ),
+                    : CircularProgressIndicator()), 
+      ),*/
     );
   }
 }

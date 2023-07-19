@@ -27,14 +27,6 @@ class LoginPage extends StatelessWidget {
     return null;
   }
 
-  Future<int> attemptSignUp(String username, String password) async {
-    var url = Uri.parse('$SERVER_IP/signup');
-    var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-    var res = await http.post(url,
-        headers: headers, body: {"username": username, "password": password});
-    return res.statusCode;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,32 +61,6 @@ class LoginPage extends StatelessWidget {
                   }
                 },
                 child: Text("Log In")),
-            ElevatedButton(
-                onPressed: () async {
-                  var username = _usernameController.text;
-                  var password = _passwordController.text;
-
-                  if (username.length < 4)
-                    displayDialog(context, "Invalid Username",
-                        "The username should be at least 4 characters long");
-                  else if (password.length < 4)
-                    displayDialog(context, "Invalid Password",
-                        "The password should be at least 4 characters long");
-                  else {
-                    var res = await attemptSignUp(username, password);
-                    if (res == 201)
-                      displayDialog(context, "Success",
-                          "The user was created. Login now.");
-                    else if (res == 409)
-                      displayDialog(
-                          context, "The username is already  registered", "P");
-                    else {
-                      displayDialog(
-                          context, "Error", "An unknown error occured.");
-                    }
-                  }
-                },
-                child: Text("Sign Up"))
           ],
         ),
       ),
