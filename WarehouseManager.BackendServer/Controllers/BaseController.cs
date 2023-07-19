@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Claims;
 using WarehouseManager.BackendServer.Data;
@@ -23,7 +22,7 @@ namespace WarehouseManager.BackendServer.Controllers
             _configuration = configuration;
         }
 
-        public int GetUserId()
+        protected int GetUserId()
         {
             var nameIdentifierClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (nameIdentifierClaim != null)
@@ -40,12 +39,6 @@ namespace WarehouseManager.BackendServer.Controllers
         {
             return Ok(await _context.Set<T>().ToListAsync());
         }
-
-        //[HttpPost("predicate")]
-        //public async Task<IActionResult> GetPredicate(Expression<Func<T, bool>> predicate)
-        //{
-        //    return Ok(await _context.Set<T>().Where(predicate).ToListAsync());
-        //}
 
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> GetById(int id)
