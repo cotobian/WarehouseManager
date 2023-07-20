@@ -68,7 +68,8 @@ namespace WarehouseManager.BackendServer.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(SystemConstants.Permissions, JsonConvert.SerializeObject(permissions))
+                new Claim(SystemConstants.Permissions, JsonConvert.SerializeObject(permissions)),
+                new Claim(SystemConstants.HandheldUser, user.handHeld.ToString())
             };
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8
                 .GetBytes(_configuration.GetSection("AppSettings:Token").Value));
