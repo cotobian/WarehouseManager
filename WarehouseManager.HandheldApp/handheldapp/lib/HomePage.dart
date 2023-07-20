@@ -22,7 +22,23 @@ class HomePage extends StatelessWidget {
         backgroundColor: const Color(0xff764abc),
       ),
       drawer: Drawer(
-        child: ListView(),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: Text('Item 1'),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text('Item 2'),
+              onTap: () {},
+            )
+          ],
+        ),
       ),
       /* ,
       body: Center(
