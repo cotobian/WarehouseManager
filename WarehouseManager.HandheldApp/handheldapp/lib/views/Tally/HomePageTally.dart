@@ -32,7 +32,7 @@ class _HomePageTallyState extends State<HomePageTally> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ForkLift App'),
+        title: Text('Tally App'),
       ),
       body: Center(
         child: _widgetOptions[_selectedIndex],

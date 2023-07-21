@@ -9,9 +9,6 @@ class _ExportTallyState extends State<ExportTally> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Tạo job xuất'),
-      ),
       body: Center(
         child: Text('Export'),
       ),
