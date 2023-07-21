@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'ImportTally.dart';
+import 'ExportTally.dart';
 
 class HomePageTally extends StatefulWidget {
   @override
@@ -12,19 +13,13 @@ class _HomePageTallyState extends State<HomePageTally> {
     fontSize: 30,
     fontWeight: FontWeight.bold,
   );
-  static const List<Widget> _widgetOptions = <Widget>[
+  static List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Home',
       style: optionStyle,
     ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    ImportTally(),
+    ExportTally(),
   ];
 
   void _onItemTapped(int index) {

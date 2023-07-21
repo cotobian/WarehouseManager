@@ -2,6 +2,6 @@
 {
     public enum HandHeldUser
     {
-        Nope, Tally, ForkLift
+        Normal, Tally, ForkLift
     }
 }

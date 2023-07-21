@@ -31,7 +31,7 @@ namespace WarehouseManager.BackendServer.Data.Entities
 
         public int DepartmentId { get; set; }
 
-        public HandHeldUser handHeld { get; set; } = HandHeldUser.Nope;
+        public HandHeldUser handHeld { get; set; } = HandHeldUser.Normal;
 
         public UserStatus Status { get; set; } = UserStatus.Working;
     }
