@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'HomePageLift.dart';
-import 'HomePageTally.dart';
+import 'ForkLift/HomePageLift.dart';
+import 'Tally/HomePageTally.dart';
+import 'User/HomePageUser.dart';
 import 'main.dart';
 import '../logics/ApiService.dart';
 
@@ -66,10 +67,11 @@ class LoginPage extends StatelessWidget {
                         ),
                       );
                     } else {
-                      displayDialog(
+                      Navigator.push(
                         context,
-                        "Not handheld user",
-                        "No account was found using handheld app",
+                        MaterialPageRoute(
+                          builder: (context) => HomePageUser(),
+                        ),
                       );
                     }
                   } else {
