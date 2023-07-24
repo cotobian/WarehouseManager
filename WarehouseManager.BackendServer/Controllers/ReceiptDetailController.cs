@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
+using WarehouseManager.ViewModels.Constants;
 using WarehouseManager.ViewModels.Warehouse.ReceiptDetail;
 
 namespace WarehouseManager.BackendServer.Controllers
@@ -15,7 +16,7 @@ namespace WarehouseManager.BackendServer.Controllers
         }
 
         [HttpGet("orderid/{id}")]
-        public virtual async Task<IActionResult> GetByOrderId(int orderid)
+        public async Task<IActionResult> GetByOrderId(int orderid)
         {
             using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
@@ -27,6 +28,41 @@ namespace WarehouseManager.BackendServer.Controllers
                 on rd.UnitId=u.Id where rd.OrderId=@OrderId and rd.Status=1";
                 var parameters = new { OrderId = orderid };
                 var result = await conn.QueryAsync<GetReceiptDetailVm>(sql, parameters, null, 120, CommandType.Text);
+                return Ok(result.ToList());
+            }
+        }
+
+        [HttpGet("pocontains/{po}")]
+        public async Task<IActionResult> GetPoContains(string po)
+        {
+            using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            {
+                if (conn.State == ConnectionState.Closed)
+                {
+                    await conn.OpenAsync();
+                }
+                po = po.ToLower();
+                var sql = @"select rd.PO as PO from ReceiptDetails rd join ReceiptOrders ro on rd.OrderId = ro.Id
+                where ro.OrderStatus in (@Status1,@Status2) and LOWER(rd.PO) like '%' + @PO + '%'";
+                var parameters = new { PO = po, Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing };
+                var result = await conn.QueryAsync<string>(sql, parameters, null, 120, CommandType.Text);
+                return Ok(result.ToList());
+            }
+        }
+
+        [HttpGet("availablePO")]
+        public async Task<IActionResult> GetAllAvailablePO()
+        {
+            using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            {
+                if (conn.State == ConnectionState.Closed)
+                {
+                    await conn.OpenAsync();
+                }
+                var sql = @"select rd.PO as PO from ReceiptDetails rd join ReceiptOrders ro on rd.OrderId = ro.Id
+                where ro.OrderStatus in (@Status1,@Status2)";
+                var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing };
+                var result = await conn.QueryAsync<string>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
             }
         }

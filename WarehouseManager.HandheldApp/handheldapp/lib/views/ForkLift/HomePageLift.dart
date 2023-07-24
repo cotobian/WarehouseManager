@@ -36,7 +36,7 @@ class _HomePageLiftState extends State<HomePageLift> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tally App'),
+        title: Text('App xe nâng'),
       ),
       body: Center(
         child: _widgetOptions[_selectedIndex],
