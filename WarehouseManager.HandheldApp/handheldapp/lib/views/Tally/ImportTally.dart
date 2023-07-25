@@ -1,21 +1,7 @@
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:handheldapp/logics/ApiService.dart';
-
-class WrapSearch extends StatefulWidget {
-  final Widget child;
-  const WrapSearch({Key? key, required this.child}) : super(key: key);
-
-  @override
-  State<WrapSearch> createState() => _WrapSearchState();
-}
-
-class _WrapSearchState extends State<WrapSearch> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(child: widget.child);
-  }
-}
+import 'package:handheldapp/models/CreatePalletDetailVm.dart';
 
 class ImportTally extends StatefulWidget {
   @override
@@ -28,101 +14,31 @@ class _ImportTallyState extends State<ImportTally> {
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _remainController = TextEditingController();
   final TextEditingController _palletController = TextEditingController();
+  final ScrollController _listController = ScrollController();
   final int ReceiptDetailId = 0;
-  final List<String> items = [
-    'Item 1',
+  List<String> items = [
+/*     'Item 1',
     'Item 2',
     'Item 3',
     'Item 4',
     'Item 5',
     'Item 6',
     'Item 7',
+ */
   ];
-  List<String> suggestions = [
-    "Apple",
-    "Armidillo",
-    "Actual",
-    "Actuary",
-    "America",
-    "Argentina",
-    "Australia",
-    "Antarctica",
-    "Blueberry",
-    "Cheese",
-    "Danish",
-    "Eclair",
-    "Fudge",
-    "Granola",
-    "Hazelnut",
-    "Ice Cream",
-    "Jely",
-    "Kiwi Fruit",
-    "Lamb",
-    "Macadamia",
-    "Nachos",
-    "Oatmeal",
-    "Palm Oil",
-    "Quail",
-    "Rabbit",
-    "Salad",
-    "T-Bone Steak",
-    "Urid Dal",
-    "Vanilla",
-    "Waffles",
-    "Yam",
-    "Zest"
-  ];
-
-  SimpleAutoCompleteTextField? textField;
-  GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
-  String currentText = "";
-  late GlobalKey keySearch;
-
-  _ImportTallyState() {
-    textField = SimpleAutoCompleteTextField(
-        key: key,
-        decoration: InputDecoration(errorText: "Beans"),
-        controller: TextEditingController(text: "Starting Text"),
-        suggestions: suggestions,
-        textChanged: (text) => currentText = text,
-        clearOnSubmit: true,
-        textSubmitted: (text) {
-          print(text);
-        });
-  }
+  List<String> poSuggestions = [];
+  List<String> itemSuggestions = [];
 
   @override
   void initState() {
     super.initState();
     initDataSearch();
-    keySearch = GlobalKey();
   }
 
   void initDataSearch() async {
-    suggestions = await ApiService.availablePO();
-    print("--------------------------");
-    print(suggestions);
-    setState(() {
-      textField = SimpleAutoCompleteTextField(
-          key: key,
-          decoration: InputDecoration(errorText: "Long Beo"),
-          controller: TextEditingController(text: "aaaa"),
-          suggestions: suggestions,
-          textChanged: (text) => currentText = text,
-          clearOnSubmit: true,
-          textSubmitted: (text) {
-            print(text);
-          });
-      keySearch = GlobalKey();
-    });
-  }
-
-  void handleTextChanged(String text) async {
-/*     List<String> suggestedPO = await ApiService.suggestPO(text);
-    setState(() {
-      suggestions = suggestedPO;
-    });
- */
+    poSuggestions = await ApiService.availablePO();
+    itemSuggestions = await ApiService.availableItem();
+    setState(() {});
   }
 
   void displayDialog(context, title, text) {
@@ -135,13 +51,62 @@ class _ImportTallyState extends State<ImportTally> {
     );
   }
 
+  bool isScrollControllerEmpty() {
+    return _listController.positions.isEmpty;
+  }
+
+  void addItemToList() {
+    String po = _poController.text;
+    String item = _itemController.text;
+    String quantity = _quantityController.text;
+    String detail = po + '-' + item + '-' + quantity;
+    if (detail.isNotEmpty) {
+      setState(() {
+        items.add(detail);
+        _poController.clear();
+        _itemController.clear();
+        _quantityController.clear();
+        _remainController.clear();
+      });
+    } else {
+      displayDialog(
+          context, 'Lỗi tạo pallet', 'Chi tiết pallet không thể để trống!');
+    }
+  }
+
+  Future<void> postPallet() async {
+    List<String> allData = [];
+    for (int i = 0; i < items.length; i++) {
+      if (_listController.position.pixels >=
+          _listController.position.maxScrollExtent) {
+        // Khi cuộn xuống cuối cùng của ListView
+        allData.addAll(items.sublist(i));
+        break;
+      }
+      allData.add(items[i]);
+    }
+    String palletNo = _palletController.text;
+    List<CreatePalletDetailVm> detailList = allData.map((data) {
+      List<String> values = data.split('-');
+      return CreatePalletDetailVm(
+          PO: values[0],
+          Item: values[1],
+          PalletNo: palletNo,
+          Quantity: int.parse(values[2]));
+    }).toList();
+    bool result = await ApiService.postDetails(detailList);
+    if (!result) {
+      displayDialog(
+          context, 'Lỗi tạo pallet', 'Chi tiết pallet không thể để trống!');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width - 20;
     return Scaffold(
       body: Column(
         children: [
-          //WrapSearch(key: keySearch, child: textField!),
           Padding(
             padding: EdgeInsets.all(10),
             child: Center(
@@ -167,26 +132,34 @@ class _ImportTallyState extends State<ImportTally> {
                         width: screenWidth / 2,
                         child: SimpleAutoCompleteTextField(
                           key: GlobalKey(),
-                          suggestions: suggestions,
-                          textChanged: handleTextChanged,
-                          clearOnSubmit: true,
+                          suggestions: poSuggestions,
+                          clearOnSubmit: false,
+                          controller: _poController,
                           decoration: InputDecoration(
                             labelText: 'Số PO',
                           ),
                           textSubmitted: (text) {
-                            print(text);
+                            setState(() {
+                              _poController.text = text;
+                            });
                           },
                         ),
                       ),
                       SizedBox(
                         width: screenWidth / 2,
-                        child: Container(
-                          child: TextField(
-                            controller: _itemController,
-                            decoration: InputDecoration(
-                              labelText: 'Số Item',
-                            ),
+                        child: SimpleAutoCompleteTextField(
+                          key: GlobalKey(),
+                          suggestions: itemSuggestions,
+                          clearOnSubmit: false,
+                          controller: _itemController,
+                          decoration: InputDecoration(
+                            labelText: 'Số Item',
                           ),
+                          textSubmitted: (text) {
+                            setState(() {
+                              _itemController.text = text;
+                            });
+                          },
                         ),
                       ),
                     ],
@@ -201,6 +174,14 @@ class _ImportTallyState extends State<ImportTally> {
                         onPressed: () async {
                           String po = _poController.text;
                           String item = _itemController.text;
+                          int remain =
+                              await ApiService.remainQuantity(po, item);
+                          setState(
+                            () {
+                              _remainController.text = remain.toString();
+                              _quantityController.text = remain.toString();
+                            },
+                          );
                         },
                         child: Text("Tìm kiếm"),
                       )
@@ -241,8 +222,14 @@ class _ImportTallyState extends State<ImportTally> {
                     children: <Widget>[
                       ElevatedButton(
                         onPressed: () async {
-                          String po = _poController.text;
-                          String item = _itemController.text;
+                          int remain =
+                              int.tryParse(_remainController.text) ?? 0;
+                          if (remain <= 0) {
+                            displayDialog(context, 'Lỗi thêm chi tiết',
+                                'Số lượng còn lại không đủ!');
+                          } else {
+                            addItemToList();
+                          }
                         },
                         child: Text("Thêm chi tiết"),
                       )
@@ -264,6 +251,7 @@ class _ImportTallyState extends State<ImportTally> {
                         height: 200,
                         child: ListView.builder(
                           itemCount: items.length,
+                          controller: _listController,
                           itemBuilder: (context, index) {
                             return ListTile(
                               title: Text(items[index]),
@@ -288,8 +276,17 @@ class _ImportTallyState extends State<ImportTally> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          String po = _poController.text;
-                          String item = _itemController.text;
+                          String palletNo = _palletController.text;
+                          if (palletNo.isEmpty) {
+                            displayDialog(context, 'Lỗi tạo pallet',
+                                'Số pallet không thể để trống!');
+                          }
+                          if (isScrollControllerEmpty()) {
+                            displayDialog(context, 'Lỗi tạo pallet',
+                                'Danh sách PO không thể để trống!');
+                          } else {
+                            postPallet();
+                          }
                         },
                         child: Text("Tạo pallet"),
                       ),

@@ -22,6 +22,7 @@ namespace WarehouseManager.BackendServer.Data
         public DbSet<ForkliftJob> ForkliftJobs { get; set; }
         public DbSet<Function> Functions { get; set; }
         public DbSet<Pallet> Pallets { get; set; }
+        public DbSet<PalletDetail> PalletDetails { get; set; }
         public DbSet<Port> Ports { get; set; }
         public DbSet<ReceiptDetail> ReceiptDetails { get; set; }
         public DbSet<ReceiptOrder> ReceiptOrders { get; set; }

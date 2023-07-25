@@ -54,6 +54,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         [HttpPost]
         public override async Task<JsonResult> AddOrEdit(ReceiptDetail obj)
         {
+            obj.OrderId = ViewBag.OrderId;
             if (obj.Id == 0)
             {
                 HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl, obj);
