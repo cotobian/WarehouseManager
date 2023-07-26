@@ -34,7 +34,7 @@
                 },
                 "columns": [
                     { "data": "palletNo" },
-                    { "data": "createDate" },
+                    { "data": "createdDate" },
                     {
                         "data": "id", "render": function (data) {
                             return "<i class='fa fa-trash f-20 text-danger' onclick=Delete(" + data + ")></i>";
@@ -57,7 +57,7 @@
                         autoOpen: true,
                         resizeable: false,
                         title: 'Nhập số Pallet',
-                        height: 170,
+                        height: 250,
                         width: 600,
                         close: function () {
                             Popup.dialog('destroy').remove();
@@ -66,8 +66,30 @@
                 });
         }
 
-        function Detail(id) {
-            window.location.href = "ReceiptDetail/Index?orderid=" + id;
+        function SubmitForm(form) {
+            $.ajax({
+                type: "POST",
+                url: form.action,
+                data: $(form).serialize(),
+                success: function (data) {
+                    if (data.success) {
+                        Popup.dialog('close');
+                        dataTable.ajax.reload();
+                        $.notify(data.message, {
+                            globalPosition: "top center",
+                            className: "success"
+                        })
+                    }
+                    else {
+                        dataTable.ajax.reload();
+                        $.notify(data.message, {
+                            globalPosition: "top center",
+                            className: "error"
+                        })
+                    }
+                }
+            });
+            return false;
         }
 
         function Delete(id) {

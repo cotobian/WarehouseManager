@@ -8,7 +8,6 @@ namespace WarehouseManager.BackendServer.Data.Validators
         public ForkliftJobValidator()
         {
             RuleFor(x => x.PalledId).NotEmpty().WithMessage("Pallet cannot be null");
-            RuleFor(x => x.Quantity).NotEmpty().WithMessage("Quantity cannot be null");
         }
     }
 }

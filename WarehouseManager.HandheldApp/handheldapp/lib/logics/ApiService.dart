@@ -83,8 +83,9 @@ class ApiService {
     if (token != null) {
       headers['Authorization'] = 'Bearer $token';
     }
-    final jsonData = list.map((list) => list.toJson()).toList();
-    final response = await http.post(url, headers: headers, body: jsonData);
+    final jsonData = list.map((item) => item.toJson()).toList();
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(jsonData));
     if (response.statusCode == 200) {
       return true;
     } else {

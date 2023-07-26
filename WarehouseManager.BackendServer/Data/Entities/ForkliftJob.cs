@@ -15,14 +15,11 @@ namespace WarehouseManager.BackendServer.Data.Entities
         [Required]
         public int PalledId { get; set; }
 
-        [Required]
-        public int Quantity { get; set; }
-
-        public int PositionId { get; set; }
+        public int? PositionId { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public DateTime CompletedDate { get; set; }
+        public DateTime? CompletedDate { get; set; }
         public int CreatedUserId { get; set; }
-        public int CompletedUserId { get; set; }
+        public int? CompletedUserId { get; set; }
         public JobStatus JobStatus { get; set; } = JobStatus.Created;
         public JobType jobType { get; set; } = JobType.Inbound;
     }

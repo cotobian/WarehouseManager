@@ -34,9 +34,9 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AddOrEdit(int palletNo)
+        public async Task<JsonResult> AddNumber(int palletNo)
         {
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/CreateList", palletNo);
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/CreateList/" + palletNo);
             if (response.IsSuccessStatusCode)
             {
                 return Json(new { success = true, message = "Tạo mới dữ liệu thành công" });

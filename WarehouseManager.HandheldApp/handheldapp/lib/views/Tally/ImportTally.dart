@@ -16,16 +16,7 @@ class _ImportTallyState extends State<ImportTally> {
   final TextEditingController _palletController = TextEditingController();
   final ScrollController _listController = ScrollController();
   final int ReceiptDetailId = 0;
-  List<String> items = [
-/*     'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6',
-    'Item 7',
- */
-  ];
+  List<String> items = [];
   List<String> poSuggestions = [];
   List<String> itemSuggestions = [];
 
@@ -286,6 +277,12 @@ class _ImportTallyState extends State<ImportTally> {
                                 'Danh sách PO không thể để trống!');
                           } else {
                             postPallet();
+                            displayDialog(
+                                context, 'Tạo pallet thành công!', '');
+                            setState(() {
+                              _palletController.clear();
+                              items = [];
+                            });
                           }
                         },
                         child: Text("Tạo pallet"),
