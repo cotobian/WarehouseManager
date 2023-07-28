@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using WarehouseManager.BackendServer.Data.Entities;
 
 namespace WarehouseManager.WebPortal.Controllers
 {
@@ -22,6 +25,22 @@ namespace WarehouseManager.WebPortal.Controllers
             _logger = logger;
         }
 
+        protected string GetUserId()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(HttpContext.Session.GetString("JwtToken"));
+            var payload = token.Payload;
+            return payload.GetValueOrDefault("nameid").ToString();
+        }
+
+        private async Task<List<Function>> getFunctionUserList()
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync("/api/Function/User/" + GetUserId());
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<Function> functions = JsonConvert.DeserializeObject<List<Function>>(responseBody).ToList();
+            return functions;
+        }
+
         public readonly string apiUrl = "/api/" + typeof(T).Name;
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -33,6 +52,9 @@ namespace WarehouseManager.WebPortal.Controllers
                 return;
             }
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            List<Function> list = Task.Run(async () => await getFunctionUserList()).Result;
+            ViewBag.ListChucNang = list;
+            ViewBag.ListChucNangCha = list.Where(c => c.ParentId == null).ToList();
             base.OnActionExecuting(context);
         }
 

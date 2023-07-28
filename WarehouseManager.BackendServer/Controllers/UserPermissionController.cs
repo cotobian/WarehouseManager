@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
-using WarehouseManager.ViewModels.Admin.RolePermission;
+using WarehouseManager.ViewModels.Admin.UserPermission;
 
 namespace WarehouseManager.BackendServer.Controllers
 {
@@ -26,7 +26,7 @@ namespace WarehouseManager.BackendServer.Controllers
                 }
                 var sql = @"SELECT f.Id,
                 f.Name as FunctionName,
-                f.ParentId,
+                ISNULL(f.ParentId,0) as ParentId,
                 ISNULL(SUM(CASE WHEN up.Command = 1 THEN 1 ELSE 0 END), 0) AS hasCreate,
                 ISNULL(SUM(CASE WHEN up.Command = 2 THEN 1 ELSE 0 END), 0) AS hasView,
                 ISNULL(SUM(CASE WHEN up.Command = 3 THEN 1 ELSE 0 END), 0) AS hasUpdate,
@@ -35,10 +35,10 @@ namespace WarehouseManager.BackendServer.Controllers
                 FROM Functions f
                 LEFT JOIN UserPermissions up ON f.Id = up.FunctionId AND up.UserId = @UserId
                 WHERE f.Status = 1
-                GROUP BY f.Id, f.Name, f.ParentId
-                ORDER BY f.ParentId";
+                GROUP BY f.Id, f.Name, f.ParentId,f.SortOrder
+                ORDER BY f.SortOrder";
                 var parameters = new { UserId = id };
-                var result = await conn.QueryAsync<RolePermissionVm>(sql, parameters, null, 120, CommandType.Text);
+                var result = await conn.QueryAsync<UserPermissionVm>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
             }
         }

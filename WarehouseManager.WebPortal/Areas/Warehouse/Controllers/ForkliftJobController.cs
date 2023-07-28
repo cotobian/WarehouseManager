@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.ViewModels.Constants;
+using WarehouseManager.ViewModels.Warehouse.ForkliftJob;
 using WarehouseManager.WebPortal.Controllers;
 
 namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
@@ -24,8 +25,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<ForkliftJob> list = JsonConvert.DeserializeObject<List<ForkliftJob>>(responseBody).Where(c => c.JobStatus != JobStatus.Deleted).ToList();
-
+            List<GetForkliftJobVm> list = JsonConvert.DeserializeObject<List<GetForkliftJobVm>>(responseBody).ToList();
             return Json(new { data = list });
         }
 

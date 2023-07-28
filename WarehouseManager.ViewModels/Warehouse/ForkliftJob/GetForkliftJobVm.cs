@@ -6,6 +6,7 @@ namespace WarehouseManager.ViewModels.Warehouse.ForkliftJob
     {
         public int Id { get; set; }
         public int PalledId { get; set; }
+        public string PalletNo { get; set; } = string.Empty;
         public string? PositionName { get; set; }
         public int? PositionId { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'ImportForklift.dart';
+
 class HomePageLift extends StatefulWidget {
   @override
   State<HomePageLift> createState() => _HomePageLiftState();
@@ -11,15 +13,12 @@ class _HomePageLiftState extends State<HomePageLift> {
     fontSize: 30,
     fontWeight: FontWeight.bold,
   );
-  static const List<Widget> _widgetOptions = <Widget>[
+  static List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Home',
       style: optionStyle,
     ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
+    ImportForklift(),
     Text(
       'Index 2: School',
       style: optionStyle,

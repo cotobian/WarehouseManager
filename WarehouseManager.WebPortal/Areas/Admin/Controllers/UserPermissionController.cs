@@ -9,7 +9,7 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
     [Area("Admin")]
     public class UserPermissionController : BaseController<UserPermission>
     {
-        public UserPermissionController(IConfiguration configuration, ILogger<WebPortal.Controllers.HomeController> logger) : base(configuration, logger)
+        public UserPermissionController(IConfiguration configuration, ILogger<HomeController> logger) : base(configuration, logger)
         {
         }
 

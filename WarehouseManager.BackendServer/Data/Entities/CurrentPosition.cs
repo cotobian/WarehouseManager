@@ -14,8 +14,7 @@ namespace WarehouseManager.BackendServer.Data.Entities
         [Required]
         public int PositionId { get; set; }
 
-        public int? ReceiptDetailId { get; set; }
-        public int? Quantity { get; set; }
+        public int? PalletId { get; set; }
         public CurrentPositionStatus Status { get; set; } = CurrentPositionStatus.Empty;
     }
 }

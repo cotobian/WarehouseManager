@@ -26,7 +26,7 @@ namespace WarehouseManager.BackendServer.Controllers
                 }
                 var sql = @"SELECT f.Id,
                 f.Name as FunctionName,
-                f.ParentId,
+                ISNULL(f.ParentId,0) as ParentId,
                 ISNULL(SUM(CASE WHEN rp.Command = 1 THEN 1 ELSE 0 END), 0) AS hasCreate,
                 ISNULL(SUM(CASE WHEN rp.Command = 2 THEN 1 ELSE 0 END), 0) AS hasView,
                 ISNULL(SUM(CASE WHEN rp.Command = 3 THEN 1 ELSE 0 END), 0) AS hasUpdate,
@@ -35,8 +35,8 @@ namespace WarehouseManager.BackendServer.Controllers
                 FROM Functions f
                 LEFT JOIN RolePermissions rp ON f.Id = rp.FunctionId AND rp.RoleId = @RoleId
                 WHERE f.Status = 1
-                GROUP BY f.Id, f.Name, f.ParentId
-                ORDER BY f.ParentId";
+                GROUP BY f.Id, f.Name, f.ParentId, f.SortOrder
+                ORDER BY f.SortOrder";
                 var parameters = new { RoleId = id };
                 var result = await conn.QueryAsync<RolePermissionVm>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());

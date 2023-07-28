@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using WarehouseManager.BackendServer.Data.Entities;
 
 namespace WarehouseManager.WebPortal.Controllers
@@ -9,7 +10,7 @@ namespace WarehouseManager.WebPortal.Controllers
         {
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }

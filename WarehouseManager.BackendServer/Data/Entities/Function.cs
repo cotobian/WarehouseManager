@@ -20,6 +20,9 @@ namespace WarehouseManager.BackendServer.Data.Entities
         [MaxLength(30)]
         public string? Controller { get; set; }
 
+        [MaxLength(30)]
+        public string? Icon { get; set; }
+
         public int? SortOrder { get; set; }
         public int? ParentId { get; set; }
 

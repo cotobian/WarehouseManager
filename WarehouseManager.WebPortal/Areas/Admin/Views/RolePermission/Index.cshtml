@@ -40,12 +40,14 @@
                     <table id="truckTable" class="table table-striped table-bordered" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Tên chức năng</th>
-                                <th>Quyền xem</th>
-                                <th>Quyền thêm</th>
-                                <th>Quyền sửa</th>
-                                <th>Quyền xóa</th>
-                                <th>Quyền duyệt</th>
+                                <th></th>
+                                <th></th>
+                                <th data-name="functionName">Tên chức năng</th>
+                                <th data-name="hasView">Quyền xem</th>
+                                <th data-name="hasCreate">Quyền thêm</th>
+                                <th data-name="hasUpdate">Quyền sửa</th>
+                                <th data-name="hasDelete">Quyền xóa</th>
+                                <th data-name="hasApprove">Quyền duyệt</th>
                             </tr>
                         </thead>
                     </table>
@@ -73,41 +75,49 @@
 
             //first load empty permission
             dataTable = $("#truckTable").DataTable({
+                "ordering": false,
                 "ajax": {
                     "url": "RolePermission/GetRolePermissionByRoleId?roleid=" + 0,
                     "type": "GET",
                     "datatype": "json",
                 },
                 "columns": [
-                    { "data": 'functionName' },
+                    { "data": 'id', "visible": false },
+                    { "data": 'parentId', "visible": false },
+                    { "data": 'functionName',
+                        "render": function(data, type, row, meta) {
+                            if (row.parentId != 0) return '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + data;
+                            else return data;
+                        } 
+                    },
                     {
-                        "data": 'hasCreate',
-                        "render": function(data) {
-                            return '<input type="checkbox"' + (data ? ' checked' : '') + '>';
+                        "data": 'hasView',
+                        "render": function(data, type, row, meta) {
+                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') +  '>';
                         }
                     },
                     {
+                        "data": 'hasCreate',
+                        "render": function(data, type, row, meta) {
+                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
+                        }
+                    }, 
+                    {
                         "data": 'hasUpdate',
-                        "render": function(data) {
-                            return '<input type="checkbox"' + (data ? ' checked' : '') + '>';
+                        "render": function(data, type, row, meta) {
+                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
                         }
                     },
                     {
                         "data": 'hasDelete',
-                        "render": function(data) {
-                            return '<input type="checkbox"' + (data ? ' checked' : '') + '>';
-                        }
-                    },
-                    {
-                        "data": 'hasView',
-                        "render": function(data) {
-                            return '<input type="checkbox"' + (data ? ' checked' : '') + '>';
+                        "render": function(data, type, row, meta) {
+                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
                         }
                     },
                     {
                         "data": 'hasApprove',
-                        "render": function(data) {
-                            return '<input type="checkbox"' + (data ? ' checked' : '') + '>';
+                        "render": function(data, type, row, meta) {
+                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
                         }
                     }
                 ]
@@ -116,19 +126,54 @@
 
         //get permission of the clicked row
         function GetPermission(id) {
-            //toggle class active to role-id id
             $('#role-list li').removeClass('active');
             $('#role-list li').filter(function() {
                 return $(this).data('role-id') === id;
             }).addClass('active');
-
-            //load permission of the clicked row
             dataTable.ajax.url("RolePermission/GetRolePermissionByRoleId?roleid=" + id).load();
         }
 
         //update role permission
         function Update() {
+            // Lấy dòng đang được chọn trong danh sách (list item)
+            var selectedRow = document.querySelector("#role-list .list-group-item.active");
 
+            // Kiểm tra xem có dòng nào được chọn không
+            if (selectedRow) {
+                var roleId = selectedRow.dataset.roleId;
+                var roleName = selectedRow.textContent.trim();
+
+            } else {
+                $.notify(("Không có dòng nào được chọn."), {
+                    globalPosition: "top center",
+                    className: "error"
+                });
+            }
         }
+
+        //checkbox clicked event
+        $('#truckTable').on('change', 'input[type="checkbox"]', function() {
+            var checkbox = $(this);
+            var data = dataTable.row($(this).closest('tr')).data();
+            var isChecked = $(this)[0].checked;
+
+            var columnIndex = $(this).parent().index();
+            if (data.parentId == 0) {
+                var rowsWithMatchingParentId = dataTable.rows().data().filter(function(rowData) {
+                    return rowData.parentId == data.id;
+                });
+                var rowsArray = rowsWithMatchingParentId.toArray();
+                for (var i = 0; i < rowsArray.length; i++) {
+                    var rowData = rowsArray[i];
+                    var row = dataTable.row(rowData).node(); 
+                    $("#truckTable tr").each(function() {
+                        if ($(this).find("td").eq(columnIndex).find("input[type=checkbox]").attr("data-id") == rowData["id"]) {
+                            $(this).find("td").eq(columnIndex).find("input[type=checkbox]").prop("checked", isChecked);
+                        }
+                    });
+                }
+                dataTable.draw();
+            }
+        });
     </script>
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WarehouseManager.BackendServer.Data;
 
@@ -11,9 +12,10 @@ using WarehouseManager.BackendServer.Data;
 namespace WarehouseManager.BackendServer.Migrations
 {
     [DbContext(typeof(WhContext))]
-    partial class WhContextModelSnapshot : ModelSnapshot
+    [Migration("20230727041658_UpdateCurrentPosition")]
+    partial class UpdateCurrentPosition
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -370,10 +372,6 @@ namespace WarehouseManager.BackendServer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Controller")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("Icon")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
