@@ -1,6 +1,6 @@
 ﻿namespace WarehouseManager.ViewModels.Admin.RolePermission
 {
-    public class RolePermissionVm
+    public class GetRolePermissionVm
     {
         public int Id { get; set; }
         public string FunctionName { get; set; } = "";

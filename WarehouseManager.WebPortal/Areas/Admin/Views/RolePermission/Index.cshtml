@@ -93,31 +93,31 @@
                     {
                         "data": 'hasView',
                         "render": function(data, type, row, meta) {
-                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') +  '>';
+                            return '<input data-command="VIEW" data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') +  '>';
                         }
                     },
                     {
                         "data": 'hasCreate',
                         "render": function(data, type, row, meta) {
-                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
+                            return '<input data-command="CREATE" data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
                         }
                     }, 
                     {
                         "data": 'hasUpdate',
                         "render": function(data, type, row, meta) {
-                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
+                            return '<input data-command="UPDATE" data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
                         }
                     },
                     {
                         "data": 'hasDelete',
                         "render": function(data, type, row, meta) {
-                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
+                            return '<input data-command="DELETE" data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
                         }
                     },
                     {
                         "data": 'hasApprove',
                         "render": function(data, type, row, meta) {
-                            return '<input data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
+                            return '<input data-command="APPROVE" data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') + '>';
                         }
                     }
                 ]
@@ -142,9 +142,53 @@
             if (selectedRow) {
                 var roleId = selectedRow.dataset.roleId;
                 var roleName = selectedRow.textContent.trim();
+                var list = [];
 
+                $("#truckTable tr").each(function () {
+                    $(this).find("td").each(function () { 
+                        var checkbox = $(this).find("input[type=checkbox]"); 
+                        var isChecked = checkbox.prop("checked"); 
+
+                        if (isChecked) { 
+                            var dataId = parseInt(checkbox.attr("data-id"));
+                            var command = checkbox.attr("data-command");
+                            var roleid = parseInt(roleId);
+
+                            var dataObject = {
+                                FunctionId: dataId,
+                                RoleId: roleid,
+                                Command: command
+                            };
+
+                            list.push(dataObject);
+                        }
+                    });
+                });
+                list = JSON.stringify({list: list});
+                $.ajax({
+                    type: "POST",
+                    url: 'RolePermission/CreateRolePermissionForRole',
+                    data: list,
+                    datatype: 'json',
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+                        }
+                        else {
+                            dataTable.ajax.reload();
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "error"
+                            })
+                        }
+                    }
+                });
             } else {
-                $.notify(("Không có dòng nào được chọn."), {
+                $.notify(("Không có chức danh nào được chọn."), {
                     globalPosition: "top center",
                     className: "error"
                 });
