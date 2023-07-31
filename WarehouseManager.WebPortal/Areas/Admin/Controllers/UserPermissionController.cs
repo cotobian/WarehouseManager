@@ -24,8 +24,26 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/User/" + userid);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<UserPermissionVm> list = JsonConvert.DeserializeObject<List<UserPermissionVm>>(responseBody);
+            List<GetUserPermissionVm> list = JsonConvert.DeserializeObject<List<GetUserPermissionVm>>(responseBody);
             return Json(new { data = list });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateUserPermissionForUser([FromBody] List<CreateUserPermissionVm> list)
+        {
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/User/", list);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true, message = "Cập nhật dữ liệu thành công" });
+            }
+            else
+            {
+                string errorContent = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(errorContent))
+                    return Json(new { success = false, message = "Có lỗi cập nhật dữ liệu" });
+                else
+                    return Json(new { success = false, message = errorContent });
+            }
         }
     }
 }

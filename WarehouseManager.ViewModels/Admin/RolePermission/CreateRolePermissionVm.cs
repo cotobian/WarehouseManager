@@ -4,6 +4,6 @@
     {
         public int FunctionId { get; set; }
         public int RoleId { get; set; }
-        public string Command { get; set; }
+        public string Command { get; set; } = String.Empty;
     }
 }

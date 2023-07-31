@@ -93,7 +93,7 @@
                     {
                         "data": 'hasView',
                         "render": function(data, type, row, meta) {
-                            return '<input data-command="VIEW" data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') +  '>';
+                            return '<input data-command="READ" data-id=' + row.id + ' type="checkbox"' + (data ? ' checked' : '') +  '>';
                         }
                     },
                     {
@@ -155,21 +155,21 @@
                             var roleid = parseInt(roleId);
 
                             var dataObject = {
-                                FunctionId: dataId,
-                                RoleId: roleid,
-                                Command: command
+                                "FunctionId": dataId,
+                                "RoleId": roleid,
+                                "Command": command
                             };
 
                             list.push(dataObject);
                         }
                     });
                 });
-                list = JSON.stringify({list: list});
                 $.ajax({
                     type: "POST",
                     url: 'RolePermission/CreateRolePermissionForRole',
-                    data: list,
-                    datatype: 'json',
+                    data: JSON.stringify(list),
+                    datatype: 'json',                
+                    contentType: 'application/json;charset=utf-8',
                     success: function (data) {
                         if (data.success) {
                             dataTable.ajax.reload();

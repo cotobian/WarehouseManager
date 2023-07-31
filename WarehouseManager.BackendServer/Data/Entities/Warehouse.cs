@@ -12,9 +12,7 @@ namespace WarehouseManager.BackendServer.Data.Entities
 
         [Required]
         [Column(TypeName = "nvarchar(50)")]
-        public string Name { get; set; }
-
-        public bool Owned { get; set; } = false;
+        public string Name { get; set; } = string.Empty;
 
         public bool Status { get; set; } = true;
     }

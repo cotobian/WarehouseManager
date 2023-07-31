@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Admin\Function\" />
     <Folder Include="Admin\Function\" />
-    <Folder Include="Index\" />
     <Folder Include="Trucking\" />
   </ItemGroup>
 

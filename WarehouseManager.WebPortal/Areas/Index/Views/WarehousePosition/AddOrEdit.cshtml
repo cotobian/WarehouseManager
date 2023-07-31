@@ -1,5 +1,28 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model WarehouseManager.BackendServer.Data.Entities.WarehousePosition
 @{
+    Layout = null;
 }
+<form action="WarehousePosition/AddOrEdit" method="post" onsubmit="return SubmitForm(this)">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+    <div class="form-group">
+        <label class="control-label">Bay</label>
+        @Html.EditorFor(model => model.Bay, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">Row</label>
+        @Html.EditorFor(model => model.Row, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">Tier</label>
+        @Html.EditorFor(model => model.Tier, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
+        <label class="control-label">Tên kho</label>
+        @Html.DropDownListFor(model => model.WarehouseId, new SelectList(ViewBag.WarehouseList, "Id", "Name"), "--Chọn Kho--", new { @class = "form-control" } )
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Cập nhật" class="btn btn-primary" />
+        <input type="reset" value="Reset" class="btn btn-warning" />
+    </div>
+</form>

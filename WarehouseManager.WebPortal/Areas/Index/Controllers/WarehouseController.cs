@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.WebPortal.Controllers;
 
 namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers

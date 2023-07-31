@@ -29,7 +29,7 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> CreateRolePermissionForRole(List<CreateRolePermissionVm> list)
+        public async Task<JsonResult> CreateRolePermissionForRole([FromBody] List<CreateRolePermissionVm> list)
         {
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/Role/", list);
             if (response.IsSuccessStatusCode)

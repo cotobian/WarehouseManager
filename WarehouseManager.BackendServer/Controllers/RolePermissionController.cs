@@ -28,17 +28,17 @@ namespace WarehouseManager.BackendServer.Controllers
                 var sql = @"SELECT f.Id,
                 f.Name as FunctionName,
                 ISNULL(f.ParentId,0) as ParentId,
-                ISNULL(SUM(CASE WHEN rp.Command = 1 THEN 1 ELSE 0 END), 0) AS hasCreate,
-                ISNULL(SUM(CASE WHEN rp.Command = 2 THEN 1 ELSE 0 END), 0) AS hasView,
-                ISNULL(SUM(CASE WHEN rp.Command = 3 THEN 1 ELSE 0 END), 0) AS hasUpdate,
-                ISNULL(SUM(CASE WHEN rp.Command = 4 THEN 1 ELSE 0 END), 0) AS hasDelete,
-                ISNULL(SUM(CASE WHEN rp.Command = 5 THEN 1 ELSE 0 END), 0) AS hasApprove
+                ISNULL(SUM(CASE WHEN rp.Command = @Create THEN 1 ELSE 0 END), 0) AS hasCreate,
+                ISNULL(SUM(CASE WHEN rp.Command = @Read THEN 1 ELSE 0 END), 0) AS hasView,
+                ISNULL(SUM(CASE WHEN rp.Command = @Update THEN 1 ELSE 0 END), 0) AS hasUpdate,
+                ISNULL(SUM(CASE WHEN rp.Command = @Delete THEN 1 ELSE 0 END), 0) AS hasDelete,
+                ISNULL(SUM(CASE WHEN rp.Command = @Approve THEN 1 ELSE 0 END), 0) AS hasApprove
                 FROM Functions f
                 LEFT JOIN RolePermissions rp ON f.Id = rp.FunctionId AND rp.RoleId = @RoleId
                 WHERE f.Status = 1
                 GROUP BY f.Id, f.Name, f.ParentId, f.SortOrder
                 ORDER BY f.SortOrder";
-                var parameters = new { RoleId = id };
+                var parameters = new { RoleId = id, Create = Command.CREATE, Read = Command.READ, Update = Command.UPDATE, Delete = Command.DELETE, Approve = Command.APPROVE };
                 var result = await conn.QueryAsync<GetRolePermissionVm>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
             }
@@ -47,6 +47,8 @@ namespace WarehouseManager.BackendServer.Controllers
         [HttpPost("Role")]
         public async Task<IActionResult> CreatePermissionForRole(List<CreateRolePermissionVm> list)
         {
+            var deletePermissions = await _context.RolePermissions.Where(x => x.RoleId == list[0].RoleId).ToListAsync();
+            _context.RolePermissions.RemoveRange(deletePermissions);
             foreach (CreateRolePermissionVm item in list)
             {
                 RolePermission role = new RolePermission();

@@ -1,11 +1,10 @@
 ﻿namespace WarehouseManager.ViewModels.Admin.UserPermission
 {
-    public class UserPermissionVm
+    public class GetUserPermissionVm
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int FunctionId { get; set; }
         public string FunctionName { get; set; } = "";
+        public int ParentId { get; set; }
         public bool hasCreate { get; set; }
         public bool hasUpdate { get; set; }
         public bool hasDelete { get; set; }
