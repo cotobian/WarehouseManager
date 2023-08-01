@@ -15,7 +15,7 @@ namespace WarehouseManager.BackendServer.Controllers
         {
         }
 
-        [HttpGet("orderid/{id}")]
+        [HttpGet("orderid/{orderid}")]
         public async Task<IActionResult> GetByOrderId(int orderid)
         {
             using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))

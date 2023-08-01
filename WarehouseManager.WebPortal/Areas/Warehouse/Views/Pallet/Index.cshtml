@@ -34,7 +34,14 @@
                 },
                 "columns": [
                     { "data": "palletNo" },
-                    { "data": "createdDate" },
+                    { "data": "createdDate", "render": function (data) {
+                            var date = new Date(data);
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+                            return (day < 10 ? "0" : "") + day + "/" + (month < 10 ? "0" : "") + month + "/" + year;
+                        }
+                    },
                     {
                         "data": "id", "render": function (data) {
                             return "<i class='fa fa-trash f-20 text-danger' onclick=Delete(" + data + ")></i>";

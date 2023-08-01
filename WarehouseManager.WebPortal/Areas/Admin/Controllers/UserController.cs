@@ -61,7 +61,7 @@ namespace WarehouseManager.WebPortal.Areas.Admin.Controllers
                     RoleId = obj.RoleId,
                     Password = "123456"
                 };
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/api/Auth/RegisterUserVm", userVm);
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/RegisterUserVm", userVm);
                 if (response.IsSuccessStatusCode)
                     return Json(new { success = true, message = "Tạo mới dữ liệu thành công" });
                 else return Json(new { success = false, message = "Có lỗi tạo dữ liệu" });

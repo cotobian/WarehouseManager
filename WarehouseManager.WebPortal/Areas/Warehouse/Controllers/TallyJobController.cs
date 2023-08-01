@@ -67,7 +67,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             {
                 string errorContent = await response.Content.ReadAsStringAsync();
                 if (string.IsNullOrEmpty(errorContent))
-                    return Json(new { success = false, message = "Có lỗi Tạo job" });
+                    return Json(new { success = false, message = "Có lỗi tạo job" });
                 else
                     return Json(new { success = false, message = errorContent });
             }

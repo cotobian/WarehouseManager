@@ -21,7 +21,7 @@ namespace WarehouseManager.BackendServer.Data.Entities
         [Required]
         public int ExpectedQuantity { get; set; }
 
-        public int? ReceivedQuantity { get; set; }
+        public int ReceivedQuantity { get; set; } = 0;
 
         [MaxLength(50)]
         public string? CustomDeclareNo { get; set; }

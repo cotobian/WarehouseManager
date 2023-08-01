@@ -60,7 +60,7 @@ namespace WarehouseManager.WebPortal.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Auth");
+            return Redirect("/Auth/Login");
         }
     }
 }

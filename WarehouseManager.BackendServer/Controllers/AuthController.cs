@@ -9,7 +9,6 @@ using System.Text;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.ViewModels;
-using WarehouseManager.ViewModels.Admin.User;
 using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Controllers
@@ -114,29 +113,11 @@ namespace WarehouseManager.BackendServer.Controllers
             return Ok(user);
         }
 
-        [Authorize("Bearer")]
-        [HttpPost("RegisterUserVm")]
-        public async Task<IActionResult> RegisterUserVm(CreateUserVm userVm)
-        {
-            User user = new User();
-            user.FullName = userVm.FullName;
-            user.Username = userVm.Username;
-            user.DepartmentId = userVm.DepartmentId;
-            user.RoleId = userVm.RoleId;
-            CreatePasswordHash(userVm.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            user.PasswordSalt = passwordSalt;
-            user.PasswordHash = passwordHash;
-            user.Username = userVm.Username;
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return Ok(user);
-        }
-
         [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginVm userVm)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(x => x.Username.ToLower().Equals(userVm.Username.ToLower()));
+            User user = await _context.Users.FirstOrDefaultAsync(x => x.Username.ToLower().Equals(userVm.Username.ToLower()) && x.Status == UserStatus.Working);
             if (user == null)
                 return BadRequest($"User {userVm.Username} không tồn tại");
             else if (!VerifyPasswordHash(userVm.Password, user.PasswordHash, user.PasswordSalt))

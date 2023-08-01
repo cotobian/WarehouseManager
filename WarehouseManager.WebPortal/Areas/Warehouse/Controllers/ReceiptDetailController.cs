@@ -37,9 +37,10 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> AddOrEdit(int id = 0)
+        public async Task<ActionResult> AddOrEdit(int orderId, int id = 0)
         {
             ViewBag.UnitList = (await UnitList()).Select(c => new { c.Id, c.Name }).ToList();
+            ViewBag.OrderId = orderId;
             if (id == 0) return View(new ReceiptDetail());
             else
             {
@@ -54,7 +55,6 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         [HttpPost]
         public override async Task<JsonResult> AddOrEdit(ReceiptDetail obj)
         {
-            obj.OrderId = ViewBag.OrderId;
             if (obj.Id == 0)
             {
                 HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl, obj);
@@ -87,36 +87,6 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<ActionResult> PrintSheet(int detailId = 0)
-        {
-            ViewBag.UnitList = (await UnitList()).Select(c => new { c.Id, c.Name }).ToList();
-            if (detailId == 0) return View(new ReceiptDetail());
-            else
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/" + detailId);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                ReceiptDetail ReceiptDetail = JsonConvert.DeserializeObject<ReceiptDetail>(responseBody);
-                return View(ReceiptDetail);
-            }
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> PrintAllSheet(int orderId = 0)
-        {
-            ViewBag.UnitList = (await UnitList()).Select(c => new { c.Id, c.Name }).ToList();
-            if (orderId == 0) return View(new ReceiptDetail());
-            else
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/" + orderId);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                ReceiptDetail ReceiptDetail = JsonConvert.DeserializeObject<ReceiptDetail>(responseBody);
-                return View(ReceiptDetail);
-            }
-        }
-
         #endregion Public Methods
 
         #region Private Methods
@@ -128,10 +98,6 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             string responseBody = await response.Content.ReadAsStringAsync();
             List<Unit> units = JsonConvert.DeserializeObject<List<Unit>>(responseBody);
             return units;
-        }
-
-        private void GenerateExcelFile(string filePath)
-        {
         }
 
         #endregion Private Methods

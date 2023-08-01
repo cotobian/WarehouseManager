@@ -62,6 +62,7 @@ class _ImportTallyState extends State<ImportTally> {
     } else {
       displayDialog(
           context, 'Lỗi tạo pallet', 'Chi tiết pallet không thể để trống!');
+      return;
     }
   }
 
@@ -89,6 +90,7 @@ class _ImportTallyState extends State<ImportTally> {
     if (!result) {
       displayDialog(
           context, 'Lỗi tạo pallet', 'Chi tiết pallet không thể để trống!');
+      return;
     }
   }
 
@@ -271,10 +273,12 @@ class _ImportTallyState extends State<ImportTally> {
                           if (palletNo.isEmpty) {
                             displayDialog(context, 'Lỗi tạo pallet',
                                 'Số pallet không thể để trống!');
+                            return;
                           }
                           if (isScrollControllerEmpty()) {
                             displayDialog(context, 'Lỗi tạo pallet',
                                 'Danh sách PO không thể để trống!');
+                            return;
                           } else {
                             postPallet();
                             displayDialog(
