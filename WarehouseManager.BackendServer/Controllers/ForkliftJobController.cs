@@ -29,7 +29,7 @@ namespace WarehouseManager.BackendServer.Controllers
                 ISNULL(f.CompletedDate,CONVERT(varchar,f.CompletedDate,103)) as CompletedDateText,u1.FullName as CreatedUserName,u2.FullName as CompletedUserName,
                 case when f.JobStatus = 0 then N'Khởi tạo' when f.JobStatus = 1 then N'Xử lý' when f.JobStatus=2 then N'Hoàn tất'
                 else N'Trouble' end as JobStatusText,case when f.jobType = 0 then N'Nhập kho' when f.jobType = 1 then N'Xuất kho'
-                when f.JobStatus=2 then N'Đảo chuyển'  end as jobTypeText from ForkliftJobs f join Pallets p on f.PalledId=p.Id
+                when f.JobStatus=2 then N'Đảo chuyển' end as jobTypeText from ForkliftJobs f join Pallets p on f.PalledId=p.Id
                 left join WarehousePositions wp on wp.Id=f.PositionId
                 join Users u1 on u1.Id=f.CreatedUserId left join Users u2
                 on u2.Id = f.CompletedUserId where f.JobStatus!=@JobStatus order by f.Id desc";
@@ -58,10 +58,9 @@ namespace WarehouseManager.BackendServer.Controllers
             job.CompletedUserId = GetUserId();
             job.JobStatus = JobStatus.Completed;
 
-            CurrentPosition cp = _context.CurrentPositions.Where(c => c.PalletId == pallet.Id
+            CurrentPosition cp = _context.CurrentPositions.Where(c => c.PositionId == position.Id
             && c.Status != CurrentPositionStatus.Deleted).FirstOrDefault();
             cp.PalletId = pallet.Id;
-            cp.PositionId = position.Id;
             cp.Status = CurrentPositionStatus.Occupied;
 
             await _context.SaveChangesAsync();

@@ -29,6 +29,7 @@ namespace WarehouseManager.BackendServer.Controllers
                 var query = from up in _context.UserPermissions
                             join f in _context.Functions on up.FunctionId equals f.Id
                             where up.Command == Command.READ & up.UserId == userid & up.Status == true
+                            orderby f.SortOrder
                             select f;
                 List<Function> functions = await query.ToListAsync();
                 return Ok(functions);

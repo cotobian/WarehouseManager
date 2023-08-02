@@ -122,7 +122,12 @@ class ApiService {
     );
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return List<String>.from(data);
+      if (data is List) {
+        List<String> palletNos =
+            data.map((item) => item['palletNo'] as String).toList();
+        return palletNos;
+      } else
+        return [];
     } else
       return [];
   }

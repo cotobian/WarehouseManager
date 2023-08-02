@@ -45,13 +45,13 @@ class _HomePageLiftState extends State<HomePageLift> {
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              child: Text('Drawer App'),
+              child: Text('HTM Logistics'),
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
             ),
             ListTile(
-              title: const Text('Home'),
+              title: const Text('Trang chủ'),
               selected: _selectedIndex == 0,
               onTap: () {
                 _onItemTapped(0);
@@ -59,7 +59,7 @@ class _HomePageLiftState extends State<HomePageLift> {
               },
             ),
             ListTile(
-              title: const Text('Business'),
+              title: const Text('Hàng nhập'),
               selected: _selectedIndex == 1,
               onTap: () {
                 _onItemTapped(1);
@@ -67,7 +67,7 @@ class _HomePageLiftState extends State<HomePageLift> {
               },
             ),
             ListTile(
-              title: const Text('School'),
+              title: const Text('Hàng xuất'),
               selected: _selectedIndex == 2,
               onTap: () {
                 _onItemTapped(2);
