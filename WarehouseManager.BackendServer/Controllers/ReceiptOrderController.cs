@@ -28,11 +28,13 @@ namespace WarehouseManager.BackendServer.Controllers
                     {
                         await conn.OpenAsync();
                     }
-                    var sql = @"select ro.*,a.Name as AgentName, c.Name as CustomerName from
+                    var sql = @"select ro.*,a.Name as AgentName, c.Name as CustomerName,
+                    case when ro.OrderStatus = @Status1 then N'Khởi tạo'
+                    when ro.OrderStatus = @Status2 then N'Đang xử lý' else N'Hoàn tất' end as StatusText from
                     ReceiptOrders ro left join Agents a on ro.AgentId=a.Id
                     left join Customers c on ro.CustomerId=c.Id
                     where ro.OrderStatus <> @OrderStatus and ro.CreatedUserId=@CreatedUserId";
-                    var parameters = new { OrderStatus = OrderStatus.Deleted, CreatedUserID = GetUserId() };
+                    var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing, OrderStatus = OrderStatus.Deleted, CreatedUserID = GetUserId() };
                     var result = await conn.QueryAsync<GetReceiptOrderVm>(sql, parameters, null, 120, CommandType.Text);
                     return Ok(result.ToList());
                 }

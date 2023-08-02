@@ -43,7 +43,7 @@ namespace WarehouseManager.BackendServer.Controllers
         public async Task<IActionResult> CompleteJob([FromBody] CompleteForkliftJobVm vm)
         {
             Pallet pallet = await _context.Pallets.Where(c => c.PalletNo == vm.PalletNo && c.Status == true).FirstOrDefaultAsync();
-            if (pallet == null) return BadRequest("No PalletNo found");
+            if (pallet == null) return BadRequest("No Pallet found");
             ForkliftJob job = await _context.ForkliftJobs.Where(c => c.PalledId == pallet.Id &&
             c.JobStatus != JobStatus.Deleted && c.JobStatus != JobStatus.Completed).FirstOrDefaultAsync();
             if (job == null) return BadRequest("No Job found");

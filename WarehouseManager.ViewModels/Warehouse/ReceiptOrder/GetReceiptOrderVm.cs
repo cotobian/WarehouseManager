@@ -28,5 +28,7 @@ namespace WarehouseManager.ViewModels.Warehouse.ReceiptOrder
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         public OrderStatus OrderStatus { get; set; }
+
+        public string StatusText { get; set; } = "";
     }
 }
