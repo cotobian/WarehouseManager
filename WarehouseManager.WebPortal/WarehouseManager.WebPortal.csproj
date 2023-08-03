@@ -1865,11 +1865,13 @@
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.102.0" />
+    <PackageReference Include="EPPlus" Version="6.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.19" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.31.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.31.0" />
+    <PackageReference Include="ZXing.Net" Version="0.16.9" />
   </ItemGroup>
 
   <ItemGroup>
@@ -1889,6 +1891,7 @@
     <Folder Include="Areas\Warehouse\Data\" />
     <Folder Include="Areas\Warehouse\Models\" />
     <Folder Include="Areas\Warehouse\Forms\" />
+    <Folder Include="wwwroot\Content\forms\palletsheets\" />
     <Folder Include="wwwroot\css\images\" />
   </ItemGroup>
 

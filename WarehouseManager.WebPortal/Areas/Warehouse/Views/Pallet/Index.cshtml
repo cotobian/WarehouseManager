@@ -8,9 +8,12 @@
     <div class="card-body">
         <div class="container-fluid">
             <a class="btn btn-success" style="margin-bottom:10px;" onclick="PopupForm('Pallet/AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
+            <a class="btn btn-primary" style="margin-bottom:10px;" onclick="PopupForm('Pallet/AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
+
             <table id="truckTable" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" id="checkAll" /></th>
                         <th>Số Pallet</th>
                         <th>Ngày tạo</th>
                         <th>Xóa</th>
@@ -33,6 +36,16 @@
                     "datatype": "json",
                 },
                 "columns": [
+                    {
+                        "data": "id",
+                        "render": function(data, type, row, meta) {
+                            return '<input data-id=' + row.id + ' type="checkbox">';
+                        },
+                        "orderable": "false",
+                        "searchable": false,
+                        "width": "20px",
+                        "className": "text-center"
+                    },
                     { "data": "palletNo" },
                     { "data": "createdDate", "render": function (data) {
                             var date = new Date(data);
@@ -48,7 +61,7 @@
                         },
                         "orderable": false,
                         "searchable": false,
-                        "width": "10px",
+                        "dth": "10px",
                         "className": 'text-center'
                     }
                 ]
