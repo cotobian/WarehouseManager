@@ -194,19 +194,19 @@
             $.ajax({
                     type: "GET",
                     url: 'Pallet/PrintMultiplePallet?palletIds=' + formattedString,
-                    success: function (data) {
-                        if (data.success) {
-                            $.notify(data.message, {
-                                globalPosition: "top center",
-                                className: "success"
-                            })
-                        }
-                        else {
-                            $.notify(data.message, {
-                                globalPosition: "top center",
-                                className: "error"
-                            })
-                        }
+                    xhrFields: {
+                        responseType: 'blob' // Sử dụng kiểu dữ liệu là blob
+                    },
+                    success: function(data) {
+                        // Tạo một URL đối tượng Blob để tải xuống
+                        var blob = new Blob([data], { type: 'application/zip' });
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'ExcelFiles.zip'; // Tên của tệp ZIP
+                        link.click();
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.error('Lỗi tải xuống: ', errorThrown);
                     }
                 });
         }
