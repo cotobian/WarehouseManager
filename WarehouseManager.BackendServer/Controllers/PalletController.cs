@@ -17,7 +17,7 @@ namespace WarehouseManager.BackendServer.Controllers
             for (int i = 1; i <= palletNo; i++)
             {
                 Pallet pallet = new Pallet();
-                pallet.PalletNo = "PL/" + DateTime.Now.ToString("ddMMyy") + "_" + (count + i).ToString("D4");
+                pallet.PalletNo = "PL_" + DateTime.Now.ToString("ddMMyy") + "_" + (count + i).ToString("D4");
                 _context.Pallets.Add(pallet);
             }
             await _context.SaveChangesAsync();

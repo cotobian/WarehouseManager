@@ -1,6 +1,32 @@
 ﻿@{
     ViewData["Title"] = "Danh sách Pallet";
 }
+<style>
+        table.dataTable > thead .sorting:before,
+    table.dataTable > thead .sorting_asc:before,
+    table.dataTable > thead .sorting_desc:before,
+    table.dataTable > thead .sorting_asc_disabled:before,
+    table.dataTable > thead .sorting_desc_disabled:before {
+        right: 1em !important;
+        /*content: "↑";*/
+        content: "" !important;
+    }
+    table.dataTable > thead .sorting:after,
+    table.dataTable > thead .sorting_asc:after,
+    table.dataTable > thead .sorting_desc:after,
+    table.dataTable > thead .sorting_asc_disabled:after,
+    table.dataTable > thead .sorting_desc_disabled:after {
+        right: 1em !important;
+        /*content: "↓";*/
+        content: "" !important;
+    }
+    table.dataTable > thead > tr > th:not(.sorting_disabled),
+    table.dataTable > thead > tr > td:not(.sorting_disabled) {
+      padding-right: 12px !important;
+    }
+
+
+</style>
 <div class="card">
     <div class="card-header">
         <h3>Danh sách Pallet</h3>
@@ -8,12 +34,12 @@
     <div class="card-body">
         <div class="container-fluid">
             <a class="btn btn-success" style="margin-bottom:10px;" onclick="PopupForm('Pallet/AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
-            <a class="btn btn-primary" style="margin-bottom:10px;" onclick="PopupForm('Pallet/AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
+            <a class="btn btn-primary" style="margin-bottom:10px;" onclick="PrintSheet()"><i class="fa fa-print"></i> In pallet</a>
 
             <table id="truckTable" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="checkAll" /></th>
+                        <th style="text-align:center;"><input type="checkbox" id="checkAll" /></th>
                         <th>Số Pallet</th>
                         <th>Ngày tạo</th>
                         <th>Xóa</th>
@@ -39,12 +65,12 @@
                     {
                         "data": "id",
                         "render": function(data, type, row, meta) {
-                            return '<input data-id=' + row.id + ' type="checkbox">';
+                            return '<input data-id=' + row.palletNo + ' type="checkbox">';
                         },
                         "orderable": "false",
                         "searchable": false,
-                        "width": "20px",
-                        "className": "text-center"
+                        "width": "10px",
+                        "className": 'text-center'
                     },
                     { "data": "palletNo" },
                     { "data": "createdDate", "render": function (data) {
@@ -61,10 +87,18 @@
                         },
                         "orderable": false,
                         "searchable": false,
-                        "dth": "10px",
+                        "width": "10px",
                         "className": 'text-center'
                     }
                 ]
+            });
+
+            $("#checkAll").on("change", function () {
+                // Lấy trạng thái của checkbox "checkAll"
+                var isChecked = $(this).prop("checked");
+
+                // Đặt trạng thái của tất cả các checkbox trong cột đầu tiên theo checkbox "checkAll"
+                $("#truckTable tbody").find("input[type='checkbox']").prop("checked", isChecked);
             });
         });
 
@@ -135,6 +169,46 @@
                     }
                 });
             }
+        }
+
+        function PrintSheet() {
+            var checkedIDs = [];
+            var formattedString = '';
+            $("#truckTable tbody").find("input[type='checkbox']:checked").each(function () {
+                var id = $(this).data("id");
+                checkedIDs.push(id);
+            });
+            if (checkedIDs.length == 0) {
+                $.notify(data.message, {
+                    globalPosition: "top center",
+                    className: "error"
+                })
+                return;
+            }
+            for (var i = 0; i < checkedIDs.length; i++) {
+                formattedString += checkedIDs[i];
+                if (i < checkedIDs.length - 1) {
+                    formattedString += ',';
+                }
+            }
+            $.ajax({
+                    type: "GET",
+                    url: 'Pallet/PrintMultiplePallet?palletIds=' + formattedString,
+                    success: function (data) {
+                        if (data.success) {
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+                        }
+                        else {
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "error"
+                            })
+                        }
+                    }
+                });
         }
     </script>
 }

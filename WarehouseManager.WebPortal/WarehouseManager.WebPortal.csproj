@@ -1891,6 +1891,7 @@
     <Folder Include="Areas\Warehouse\Data\" />
     <Folder Include="Areas\Warehouse\Models\" />
     <Folder Include="Areas\Warehouse\Forms\" />
+    <Folder Include="wwwroot\Content\forms\images\" />
     <Folder Include="wwwroot\Content\forms\palletsheets\" />
     <Folder Include="wwwroot\css\images\" />
   </ItemGroup>
