@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.ViewModels.Constants;
+using WarehouseManager.ViewModels.Warehouse.CurrentPosition;
 using WarehouseManager.WebPortal.Controllers;
 
 namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
@@ -13,7 +14,13 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         {
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.WarehouseList = (await WarehouseList()).Select(c => new { c.Id, c.Name });
+            return View();
+        }
+
+        public IActionResult StackLayout()
         {
             return View();
         }
@@ -29,7 +36,17 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> AddOrEdit(int id = 0)
+        public async Task<JsonResult> GetStackLayout(int warehouseid)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "StackLayout/" + warehouseid);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<CurrentStockVm> list = JsonConvert.DeserializeObject<List<CurrentStockVm>>(responseBody).ToList();
+            return Json(new { data = list });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddOrEdit(int id = 0)
         {
             if (id == 0) return View(new CurrentPosition());
             else
@@ -40,6 +57,25 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
                 CurrentPosition currentPosition = JsonConvert.DeserializeObject<CurrentPosition>(responseBody);
                 return View(currentPosition);
             }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetLayoutPosition(int warehouseid)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "PositionLayout/" + warehouseid);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<LayoutPositionVm> list = JsonConvert.DeserializeObject<List<LayoutPositionVm>>(responseBody).ToList();
+            return Json(new { data = list });
+        }
+
+        private async Task<List<BackendServer.Data.Entities.Warehouse>> WarehouseList()
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync("/api/Warehouse");
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<BackendServer.Data.Entities.Warehouse> roles = JsonConvert.DeserializeObject<List<BackendServer.Data.Entities.Warehouse>>(responseBody).Where(c => c.Status != false).ToList();
+            return roles;
         }
     }
 }

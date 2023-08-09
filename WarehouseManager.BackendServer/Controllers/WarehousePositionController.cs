@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
+using WarehouseManager.BackendServer.Data.Validators;
 using WarehouseManager.ViewModels.Index;
 
 namespace WarehouseManager.BackendServer.Controllers
@@ -29,6 +30,26 @@ namespace WarehouseManager.BackendServer.Controllers
                         };
             var data = await query.OrderBy(c => c.Id).ToListAsync();
             return Ok(data);
+        }
+
+        [HttpPost]
+        public override async Task<IActionResult> Post(WarehousePosition item)
+        {
+            WarehousePositionValidator validator = new WarehousePositionValidator();
+            var results = validator.Validate(item);
+
+            if (results.IsValid)
+            {
+                _context.WarehousePositions.Add(item);
+                await _context.SaveChangesAsync();
+                CurrentPosition currentPosition = new CurrentPosition();
+                currentPosition.PositionId = item.Id;
+                currentPosition.Status = ViewModels.Constants.CurrentPositionStatus.Empty;
+                _context.CurrentPositions.Add(currentPosition);
+                await _context.SaveChangesAsync();
+                return Ok(item);
+            }
+            else return BadRequest($"Property '{results.Errors[0].PropertyName}': {results.Errors[0].ErrorMessage}");
         }
     }
 }

@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewData["Title"] = "Sơ đồ kho";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3>Sơ đồ kho</h3>
+    </div>
+    <div class="card-body">
+        <div class="container-fluid">
+            <div id="layout"></div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: 'CurrentPosition/GetLayoutPosition?warehouseid=' + 1,
+                success: function (data) {
+                    if (data.success) {
+                        $.notify(data.message, {
+                            globalPosition: "top center",
+                            className: "success"
+                        })
+                    }
+                    else {
+                        $.notify(data.message, {
+                            globalPosition: "top center",
+                            className: "error"
+                        })
+                    }
+                }
+            });
+        });
+    </script>
+}
