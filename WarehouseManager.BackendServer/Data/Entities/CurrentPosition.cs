@@ -15,6 +15,7 @@ namespace WarehouseManager.BackendServer.Data.Entities
         public int PositionId { get; set; }
 
         public int? PalletId { get; set; }
+        public string? Color { get; set; }
         public CurrentPositionStatus Status { get; set; } = CurrentPositionStatus.Empty;
     }
 }

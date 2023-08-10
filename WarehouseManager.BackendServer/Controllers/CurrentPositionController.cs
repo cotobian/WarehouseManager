@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
@@ -49,19 +50,46 @@ namespace WarehouseManager.BackendServer.Controllers
         [HttpGet("StackLayout/{warehouseid}")]
         public async Task<IActionResult> GetStackLayout(int warehouseid)
         {
-            using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            List<StackLayoutVm> result = new List<StackLayoutVm>();
+            List<string> bayList = await _context.WarehousePositions
+                .Where(c => c.WarehouseId == warehouseid && c.Status == true)
+                .Select(c => c.Bay)
+                .Distinct()
+                .ToListAsync();
+            foreach (string bay in bayList)
             {
-                if (conn.State == ConnectionState.Closed)
+                List<string> colorList = new List<string>();
+                StackLayoutVm vm = new StackLayoutVm();
+                vm.Bay = bay;
+                vm.RowList = await _context.WarehousePositions
+                    .Where(c => c.Bay.Equals(bay) && c.Status == true)
+                    .Select(c => c.Row)
+                    .Distinct()
+                    .ToListAsync();
+                foreach (string row in vm.RowList)
                 {
-                    await conn.OpenAsync();
+                    List<int> posList = await _context.WarehousePositions
+                        .Where(c => c.Bay.Equals(bay) && c.Row.Equals(row) && c.Status == true)
+                        .Select(c => c.Id)
+                        .ToListAsync();
+                    foreach (int pos in posList)
+                    {
+                        string color = await _context.CurrentPositions
+                            .Where(c => c.PositionId == pos && c.Status != CurrentPositionStatus.Deleted)
+                            .Select(c => c.Color)
+                            .FirstOrDefaultAsync();
+                        if (!string.IsNullOrEmpty(color) && !colorList.Contains(color))
+                        {
+                            colorList.Add(color);
+                        }
+                    }
                 }
-                var sql = @"select * from CurrentPositions cp left join PalletDetails pd
-                on cp.PalletId=pd.PalletId left join WarehousePositions wp
-                on cp.PositionId=wp.Id where cp.Status=@Status and wp.WarehouseId=@WarehouseId";
-                var parameters = new { WarehouseId = warehouseid, Status = CurrentPositionStatus.Occupied };
-                var result = await conn.QueryAsync<CurrentStockVm>(sql, parameters, null, 120, CommandType.Text);
-                return Ok(result.ToList());
+                if (colorList.Count > 1) vm.Color = "#f58a42";
+                else if (colorList.Count == 1) vm.Color = colorList[0];
+                else vm.Color = string.Empty;
+                result.Add(vm);
             }
+            return Ok(result);
         }
     }
 }

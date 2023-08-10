@@ -28,6 +28,9 @@ namespace WarehouseManager.BackendServer.Data.Entities
         [Column(TypeName = "nvarchar(200)")]
         public string? Note { get; set; }
 
+        [MaxLength(20)]
+        public string? Color { get; set; }
+
         public bool Status { get; set; } = true;
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WarehouseManager.BackendServer.Data;
 
@@ -11,9 +12,10 @@ using WarehouseManager.BackendServer.Data;
 namespace WarehouseManager.BackendServer.Migrations
 {
     [DbContext(typeof(WhContext))]
-    partial class WhContextModelSnapshot : ModelSnapshot
+    [Migration("20230810080331_AddColorPosition1008")]
+    partial class AddColorPosition1008
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

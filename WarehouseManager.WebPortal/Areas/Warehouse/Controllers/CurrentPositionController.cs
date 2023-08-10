@@ -20,8 +20,9 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             return View();
         }
 
-        public IActionResult StackLayout()
+        public async Task<IActionResult> StackLayout()
         {
+            ViewBag.WarehouseList = (await WarehouseList()).Select(c => new { c.Id, c.Name });
             return View();
         }
 
@@ -38,11 +39,11 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<JsonResult> GetStackLayout(int warehouseid)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "StackLayout/" + warehouseid);
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/StackLayout/" + warehouseid);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             List<CurrentStockVm> list = JsonConvert.DeserializeObject<List<CurrentStockVm>>(responseBody).ToList();
-            return Json(new { data = list });
+            return Json(list);
         }
 
         [HttpGet]

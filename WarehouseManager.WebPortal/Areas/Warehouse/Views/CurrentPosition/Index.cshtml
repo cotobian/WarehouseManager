@@ -7,23 +7,20 @@
     </div>
     <div class="card-body">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-1 col-d-1">
-                    <label class="control-label">Chọn kho</label>
-                </div>
+            <div class="row" style="margin-bottom:20px;">
                 <div class="col-sm-3 col-md-3"">
                     <select id="warehouseSelect" name="warehouseSelect" class="form-control" style="margin-right: 10px;">
+                        <option value="0">-- Chọn kho --</option>
                         @foreach(var warehouse in ViewBag.WarehouseList)
                         {
                             <option value="@warehouse.Id">@warehouse.Name</option>
                         }
                     </select>
                 </div>
-                <div class="col-sm-2 col-d-2">
-                    <a class="btn btn-primary" onclick="ChooseWarehouse()"><i class="fa fa-wrench"></i> Chọn kho</a>
+                <div class="col-sm-2 col-md-2">
+                    <a class="btn btn-primary" onclick="ChooseWarehouse()"> Chọn kho</a>
                 </div>
             </div>
-            <a class="btn btn-success" style="margin-bottom:10px;" onclick="PopupForm('AddOrEdit')"><i class="fa fa-plus"></i> Thêm mới</a>
             <table id="truckTable" class="table table-striped table-bDetailed" style="width:100%">
                 <thead>
                     <tr>
