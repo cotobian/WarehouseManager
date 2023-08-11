@@ -45,6 +45,7 @@ namespace WarehouseManager.BackendServer.Controllers
                 CurrentPosition currentPosition = new CurrentPosition();
                 currentPosition.PositionId = item.Id;
                 currentPosition.Status = ViewModels.Constants.CurrentPositionStatus.Empty;
+                currentPosition.Color = string.Empty;
                 _context.CurrentPositions.Add(currentPosition);
                 await _context.SaveChangesAsync();
                 return Ok(item);

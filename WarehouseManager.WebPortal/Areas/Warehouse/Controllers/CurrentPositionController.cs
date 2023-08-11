@@ -27,6 +27,16 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> DisplayTier(string bay, string row, int warehouseid)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/StackLayout/" + warehouseid);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<StackLayoutVm> list = JsonConvert.DeserializeObject<List<StackLayoutVm>>(responseBody).ToList();
+            return View();
+        }
+
+        [HttpGet]
         public async Task<JsonResult> GetAllCurrentPosition()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
@@ -42,7 +52,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/StackLayout/" + warehouseid);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<CurrentStockVm> list = JsonConvert.DeserializeObject<List<CurrentStockVm>>(responseBody).ToList();
+            List<StackLayoutVm> list = JsonConvert.DeserializeObject<List<StackLayoutVm>>(responseBody).ToList();
             return Json(list);
         }
 

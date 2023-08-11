@@ -58,16 +58,18 @@ namespace WarehouseManager.BackendServer.Controllers
                 .ToListAsync();
             foreach (string bay in bayList)
             {
-                List<string> colorList = new List<string>();
                 StackLayoutVm vm = new StackLayoutVm();
-                vm.Bay = bay;
-                vm.RowList = await _context.WarehousePositions
+                List<RowDisplay> rowList = new List<RowDisplay>();
+                List<string> rows = await _context.WarehousePositions
                     .Where(c => c.Bay.Equals(bay) && c.Status == true)
                     .Select(c => c.Row)
                     .Distinct()
                     .ToListAsync();
-                foreach (string row in vm.RowList)
+                foreach (string row in rows)
                 {
+                    RowDisplay rowDisplay = new RowDisplay();
+                    rowDisplay.RowText = row;
+                    List<string> colorList = new List<string>();
                     List<int> posList = await _context.WarehousePositions
                         .Where(c => c.Bay.Equals(bay) && c.Row.Equals(row) && c.Status == true)
                         .Select(c => c.Id)
@@ -83,13 +85,21 @@ namespace WarehouseManager.BackendServer.Controllers
                             colorList.Add(color);
                         }
                     }
+                    if (colorList.Count > 1) rowDisplay.RowColor = "#FF6347";
+                    else if (colorList.Count == 1) rowDisplay.RowColor = colorList[0];
+                    else rowDisplay.RowColor = "";
+                    rowList.Add(rowDisplay);
                 }
-                if (colorList.Count > 1) vm.Color = "#f58a42";
-                else if (colorList.Count == 1) vm.Color = colorList[0];
-                else vm.Color = string.Empty;
+                vm.Bay = bay;
+                vm.RowList = rowList;
                 result.Add(vm);
             }
             return Ok(result);
+        }
+
+        [HttpGet("DisplayTier/{warehouseid}/Bay/{bay}/Row/{row}")]
+        public async Task<IActionResult> DisplayTier(string bay, string row, int warehouseid)
+        {
         }
     }
 }

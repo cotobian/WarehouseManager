@@ -9,6 +9,15 @@
         border-radius: 0.35rem;
         padding: 10px;
     }
+    .square {
+        width: 25px;
+        height: 25px;
+        border: 0.5px solid #d1d3e2;
+        margin: 2px;
+        float: left; 
+        cursor: pointer;
+    }
+
 </style>
 
 <div class="card">
@@ -31,7 +40,8 @@
                     <a class="btn btn-primary" onclick="ChooseWarehouse()"> Chọn kho</a>
                 </div>
             </div>
-            <div id="layout"></div>
+            <div id="layout">
+            </div>
         </div>
     </div>
 </div>
@@ -52,13 +62,46 @@
                     type: "GET",
                     url: 'GetStackLayout?warehouseid=' + selectedWh,
                     success: function (data) {
-                        $('#layout').toggleClass('active');
-                        $('#layout').append(
-                            '<div>' + data[0].bay + '</div>'
-                        );
+                        if (!$('#layout').hasClass('active')) {
+                            $('#layout').addClass('active'); 
+                        }
+                        var layout = "";
+                        data.forEach(function(bay) {
+                            layout += '<div class="row"><div class="col-1">' + bay.bay + '</div><div class="col-11">';
+                            bay.rowList.forEach(function(row) {
+                                if (row.rowColor != undefined || row.rowColor != null)
+                                    layout += '<div class="square" style="background-color:' + 
+                                    row.rowColor + ' onclick=PopupForm("DisplayTier?bay=' + 
+                                    bay.bay + '&row=' + row.rowText + '&warehouseid=' + 
+                                    selectedWh + '")>' + row.rowText + '</div>';
+                                else layout += '<div class="square" onclick=PopupForm("DisplayTier?bay=' + 
+                                    bay.bay + '&row=' + row.rowText + '&warehouseid=' + 
+                                    selectedWh + '">' + row.rowText + '</div>'; 
+                            });
+                            layout += '</div></div>'; 
+                        });
+                        $('#layout').html(layout);
                     }
                 });
             }
+        }
+
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+                    Popup = formDiv.dialog({
+                        autoOpen: true,
+                        resizeable: false,
+                        title: 'Sơ đồ Row chi tiết',
+                        height: 470,
+                        width: 600,
+                        close: function () {
+                            Popup.dialog('destroy').remove();
+                        }
+                    });
+                });
         }
     </script>
 }
