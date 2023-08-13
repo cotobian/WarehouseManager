@@ -71,7 +71,7 @@
                             bay.rowList.forEach(function(row) {
                                 if (row.rowColor != undefined || row.rowColor != null)
                                     layout += '<div class="square" style="background-color:' + 
-                                    row.rowColor + ' onclick=PopupForm("DisplayTier?bay=' + 
+                                    row.rowColor + ';"' + ' onclick=PopupForm("DisplayTier?bay=' + 
                                     bay.bay + '&row=' + row.rowText + '&warehouseid=' + 
                                     selectedWh + '")>' + row.rowText + '</div>';
                                 else layout += '<div class="square" onclick=PopupForm("DisplayTier?bay=' + 

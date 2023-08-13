@@ -32,7 +32,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/StackLayout/" + warehouseid);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<StackLayoutVm> list = JsonConvert.DeserializeObject<List<StackLayoutVm>>(responseBody).ToList();
+            List<DisplayTierVm> list = JsonConvert.DeserializeObject<List<DisplayTierVm>>(responseBody).ToList();
             return View();
         }
 
