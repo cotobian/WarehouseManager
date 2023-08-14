@@ -14,16 +14,22 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         {
         }
 
-        public async Task<IActionResult> Index()
-        {
-            ViewBag.WarehouseList = (await WarehouseList()).Select(c => new { c.Id, c.Name });
-            return View();
-        }
+        #region StackLayout
 
         public async Task<IActionResult> StackLayout()
         {
             ViewBag.WarehouseList = (await WarehouseList()).Select(c => new { c.Id, c.Name });
             return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetStackLayout(int warehouseid)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/StackLayout/" + warehouseid);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<StackLayoutVm> list = JsonConvert.DeserializeObject<List<StackLayoutVm>>(responseBody).ToList();
+            return Json(list);
         }
 
         [HttpGet]
@@ -33,6 +39,16 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             List<DisplayTierVm> list = JsonConvert.DeserializeObject<List<DisplayTierVm>>(responseBody).ToList();
+            return View();
+        }
+
+        #endregion StackLayout
+
+        #region PositionLayout
+
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.WarehouseList = (await WarehouseList()).Select(c => new { c.Id, c.Name });
             return View();
         }
 
@@ -47,39 +63,20 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetStackLayout(int warehouseid)
+        public async Task<JsonResult> GetCurrentStock(int warehouseid)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/StackLayout/" + warehouseid);
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/CurrentStock/" + warehouseid);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<StackLayoutVm> list = JsonConvert.DeserializeObject<List<StackLayoutVm>>(responseBody).ToList();
-            return Json(list);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> AddOrEdit(int id = 0)
-        {
-            if (id == 0) return View(new CurrentPosition());
-            else
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/" + id);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                CurrentPosition currentPosition = JsonConvert.DeserializeObject<CurrentPosition>(responseBody);
-                return View(currentPosition);
-            }
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetLayoutPosition(int warehouseid)
-        {
-            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "PositionLayout/" + warehouseid);
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            List<LayoutPositionVm> list = JsonConvert.DeserializeObject<List<LayoutPositionVm>>(responseBody).ToList();
+            List<CurrentStockVm> list = JsonConvert.DeserializeObject<List<CurrentStockVm>>(responseBody).ToList();
             return Json(new { data = list });
         }
 
+        #endregion PositionLayout
+
+        #region Common
+
+        //lay danh sach kho
         private async Task<List<BackendServer.Data.Entities.Warehouse>> WarehouseList()
         {
             HttpResponseMessage response = await _httpClient.GetAsync("/api/Warehouse");
@@ -88,5 +85,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             List<BackendServer.Data.Entities.Warehouse> roles = JsonConvert.DeserializeObject<List<BackendServer.Data.Entities.Warehouse>>(responseBody).Where(c => c.Status != false).ToList();
             return roles;
         }
+
+        #endregion Common
     }
 }

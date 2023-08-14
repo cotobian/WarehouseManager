@@ -1,9 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "Chi tiết Tồn kho";
+    ViewData["Title"] = "Quản lý Tồn kho";
 }
 <div class="card">
     <div class="card-header">
-        <h3>Chi tiết Tồn kho</h3>
+        <h3>Quản lý Tồn kho</h3>
     </div>
     <div class="card-body">
         <div class="container-fluid">
@@ -43,7 +43,7 @@
         $(document).ready(function () {
             dataTable = $("#truckTable").DataTable({
                 "ajax": {
-                    "url": "GetDeliveryDetailByOrder?orderid=" + @ViewBag.OrderId,
+                    "url": "CurrentPosition/GetCurrentStock?warehouseid=0",
                     "type": "GET",
                     "datatype": "json",
                 },
@@ -57,78 +57,18 @@
                 ]
             });
         });
-
-        function PopupForm(url) {
-            var formDiv = $('<div/>');
-            $.get(url)
-            .done(function (response) {
-                formDiv.html(response);
-                Popup = formDiv.dialog({
-                    autoOpen: true,
-                    resizeable: false,
-                    title: 'Nhập thông tin PO',
-                    height: 470,
-                    width: 600,
-                    close: function () {
-                        Popup.dialog('destroy').remove();
-                    }
-                });
-            });
-        }
-
-        function SubmitForm(form) {
-            $.ajax({
-                type: "POST",
-                url: form.action,
-                data: $(form).serialize(),
-                success: function (data) {
-                    if (data.success) {
-                        Popup.dialog('close');
-                        dataTable.ajax.reload();
-                        $.notify(data.message, {
-                            globalPosition: "top center",
-                            className: "success"
-                        })
-                    }
-                    else {
-                        dataTable.ajax.reload();
-                        $.notify(data.message, {
-                            globalPosition: "top center",
-                            className: "error"
-                        })
-                    }
-                }
-            });
-            return false;
-        }
-
-        function Delete(id) {
-            if (confirm("Bạn có muốn xóa PO này không?")) {
-                $.ajax({
-                    type: "GET",
-                    url: 'Delete?id=' + id,
-                    success: function (data) {
-                        if (data.success) {
-                            dataTable.ajax.reload();
-                            $.notify(data.message, {
-                                globalPosition: "top center",
-                                className: "success"
-                            })
-                        }
-                        else {
-                            dataTable.ajax.reload();
-                            $.notify(data.message, {
-                                globalPosition: "top center",
-                                className: "error"
-                            })
-                        }
-                    }
-                });
+        
+        function ChooseWarehouse(){
+            var selectedWh = $('#warehouseSelect').val();
+            if (selectedWh == 0 || selectedWh == undefined) {
+                $.notify('Hãy chọn kho trước!', {
+                    globalPosition: "top center",
+                    className: "error"
+                })
+                return false;
             }
+            dataTable.ajax.url('CurrentPosition/GetCurrentStock?warehouseid=' + selectedWh).load();
         }
 
-        function CreateTallyJob() {
-
-        }
     </script>
 }

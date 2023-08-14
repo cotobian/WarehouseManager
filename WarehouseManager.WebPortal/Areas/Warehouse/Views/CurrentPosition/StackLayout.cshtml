@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Sơ đồ Tồn kho";
+    ViewData["Title"] = "Sơ đồ Xếp hàng";
 }
 
 <style>
@@ -16,13 +16,15 @@
         margin: 2px;
         float: left; 
         cursor: pointer;
+        border-radius: 0.25rem;
+        text-align: center;
     }
 
 </style>
 
 <div class="card">
     <div class="card-header">
-        <h3>Sơ đồ Tồn kho</h3>
+        <h3>Sơ đồ Xếp hàng</h3>
     </div>
     <div class="card-body">
         <div class="container-fluid">
@@ -88,20 +90,19 @@
 
         function PopupForm(url) {
             var formDiv = $('<div/>');
-            $.get(url)
-                .done(function (response) {
-                    formDiv.html(response);
-                    Popup = formDiv.dialog({
-                        autoOpen: true,
-                        resizeable: false,
-                        title: 'Sơ đồ Row chi tiết',
-                        height: 470,
-                        width: 600,
-                        close: function () {
-                            Popup.dialog('destroy').remove();
-                        }
-                    });
+            $.get(url).done(function (response) {
+                formDiv.html(response);
+                Popup = formDiv.dialog({
+                    autoOpen: true,
+                    resizeable: false,
+                    title: 'Sơ đồ Row chi tiết',
+                    height: 470,
+                    width: 600,
+                    close: function () {
+                        Popup.dialog('destroy').remove();
+                    }
                 });
+            });
         }
     </script>
 }

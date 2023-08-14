@@ -14,6 +14,8 @@ namespace WarehouseManager.BackendServer.Data.Entities
         [Required]
         public int ReceiptDetailId { get; set; }
 
+        public int? PalletId { get; set; }
+
         public int? Quantity { get; set; }
 
         public int? CreatedUserId { get; set; }

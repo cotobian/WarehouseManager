@@ -29,8 +29,8 @@ namespace WarehouseManager.BackendServer.Controllers
             else return NotFound();
         }
 
-        [HttpGet("PositionLayout/{warehouseid}")]
-        public async Task<IActionResult> GetPositionLayout(int warehouseid)
+        [HttpGet("CurrentStock/{warehouseid}")]
+        public async Task<IActionResult> GetCurrentStock(int warehouseid)
         {
             using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
@@ -38,11 +38,13 @@ namespace WarehouseManager.BackendServer.Controllers
                 {
                     await conn.OpenAsync();
                 }
-                var sql = @"select distinct cp.PalletId,wp.Bay,wp.Row from
-                CurrentPositions cp join WarehousePositions wp
-                on cp.PositionId=wp.Id where wp.WarehouseId=@WarehouseId and cp.Status!=@Status";
-                var parameters = new { WarehouseId = warehouseid, Status = CurrentPositionStatus.Deleted };
-                var result = await conn.QueryAsync<LayoutPositionVm>(sql, parameters, null, 120, CommandType.Text);
+                var sql = @"select wp.Bay,wp.Row,wp.Tier,rd.PO,rd.Item,pd.Quantity
+                from CurrentPositions cp join WarehousePositions wp
+                on cp.PositionId=wp.Id join PalletDetails pd on pd.Id=cp.PalletId
+                join ReceiptDetails rd on rd.Id=pd.ReceiptDetailId where
+                wp.WarehouseId=@WarehouseId and cp.Status=@Status";
+                var parameters = new { WarehouseId = warehouseid, Status = CurrentPositionStatus.Occupied };
+                var result = await conn.QueryAsync<CurrentStockVm>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
             }
         }
