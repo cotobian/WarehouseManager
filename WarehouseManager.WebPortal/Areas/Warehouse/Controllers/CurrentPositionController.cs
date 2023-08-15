@@ -35,11 +35,11 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<IActionResult> DisplayTier(string bay, string row, int warehouseid)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/StackLayout/" + warehouseid);
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/DisplayTier/" + warehouseid + "/Bay/" + bay + "/Row/" + row);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<DisplayTierVm> list = JsonConvert.DeserializeObject<List<DisplayTierVm>>(responseBody).ToList();
-            return View();
+            DisplayTierVm list = JsonConvert.DeserializeObject<DisplayTierVm>(responseBody);
+            return View(list);
         }
 
         #endregion StackLayout

@@ -62,6 +62,7 @@ namespace WarehouseManager.WebPortal.Controllers
         public virtual async Task<JsonResult> AddOrEdit(T obj)
         {
             PropertyInfo idProperty = typeof(T).GetProperty("Id");
+            if (idProperty == null) return Json(new { success = false, message = "No id Property!" });
             int? Id = (int?)idProperty.GetValue(obj);
             if (Id == 0 || Id == null)
             {

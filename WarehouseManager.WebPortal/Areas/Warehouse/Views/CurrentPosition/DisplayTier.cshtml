@@ -1,4 +1,4 @@
-﻿
+﻿@model WarehouseManager.ViewModels.Warehouse.CurrentPosition.DisplayTierVm
 @{
     Layout = null;
 }
@@ -17,21 +17,58 @@
     .tier {
         width: 100px;
         height: 100px;
-        background-color: lightblue;
-        border: 2px solid blue;
+        color: black;
+        border: 1px solid blue;
         margin-top: 10px;
+        border-radius: 0.35rem;
     }
 </style>
 </head>
 <body>
 
 <div class="container-tier">
-    <div class="tier"></div>
-    <div class="tier"></div>
-    <div class="tier"></div>
-    <div class="tier"></div>
-    <div class="tier"></div>
-    <div class="tier"></div>
+    <span class="tier-text">01</span>
+    <div class="tier">
+        @foreach (var item in Model.ListItem[0])
+        {
+           @item.ToString()
+        }
+    </div>
+    <span class="tier-text">02</span>
+    <div class="tier">
+        @foreach (var item in Model.ListItem[1])
+        {
+           @item.ToString()
+        }
+    </div>
+    <span class="tier-text">03</span>
+    <div class="tier">
+        @foreach (var item in Model.ListItem[2])
+        {
+           @item.ToString()
+        }
+    </div>
+    <span class="tier-text">04</span>
+    <div class="tier">
+        @foreach (var item in Model.ListItem[3])
+        {
+           @item.ToString()
+        }
+    </div>
+    <span class="tier-text">05</span>
+    <div class="tier">
+        @foreach (var item in Model.ListItem[4])
+        {
+           @item.ToString()
+        }
+    </div>
+    <span class="tier-text">06</span>
+    <div class="tier">
+        @foreach (var item in Model.ListItem[5])
+        {
+           @item.ToString()
+        }
+    </div>
 </div>
 
 </body>

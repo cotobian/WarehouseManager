@@ -103,25 +103,33 @@ namespace WarehouseManager.BackendServer.Controllers
         public async Task<IActionResult> DisplayTier(string bay, string row, int warehouseid)
         {
             DisplayTierVm tierVm = new DisplayTierVm();
-            WarehousePosition warehousePosition = await _context.WarehousePositions.Where(c => c.Bay.Equals(bay) && c.Row.Equals(row) && c.WarehouseId == warehouseid && c.Status == true).FirstOrDefaultAsync();
-            if (warehousePosition != null)
+            WarehousePosition warehousePosition = await _context.WarehousePositions
+                .Where(c => c.Bay.Equals(bay) && c.Row.Equals(row) && c.WarehouseId == warehouseid && c.Status == true)
+                .FirstOrDefaultAsync();
+            if (warehousePosition == null)
             {
                 return BadRequest("Warehouse Position not found!");
             }
-            CurrentPosition currentPosition = await _context.CurrentPositions.Where(c => c.PositionId == warehousePosition.Id && c.Status != CurrentPositionStatus.Deleted).FirstOrDefaultAsync();
+            CurrentPosition currentPosition = await _context.CurrentPositions
+                .Where(c => c.PositionId == warehousePosition.Id && c.Status != CurrentPositionStatus.Deleted)
+                .FirstOrDefaultAsync();
+            if (currentPosition == null)
+            {
+                return BadRequest("Stacked Position not found!");
+            }
             if (currentPosition.PalletId != null)
             {
-                PalletDetail pallet = await _context.PalletDetails.Where(c => c.PalletId == currentPosition.PalletId).FirstOrDefaultAsync();
-                ReceiptDetail receiptDetail = await _context.ReceiptDetails.Where(c => c.Id == pallet.ReceiptDetailId).FirstOrDefaultAsync();
-                tierVm.PO = receiptDetail.PO;
-                tierVm.Item = receiptDetail.Item;
-                tierVm.Quantity = pallet.Quantity;
-            }
-            else
-            {
-                tierVm.PO = string.Empty;
-                tierVm.Item = string.Empty;
-                tierVm.Quantity = 0;
+                List<PalletDetail> pallet = await _context.PalletDetails
+                    .Where(c => c.PalletId == currentPosition.PalletId)
+                    .ToListAsync();
+                foreach (PalletDetail palletDetail in pallet)
+                {
+                    ReceiptDetail receiptDetail = await _context.ReceiptDetails
+                        .Where(c => c.Id == palletDetail.ReceiptDetailId)
+                        .FirstOrDefaultAsync();
+                    string item = receiptDetail.PO + "-" + (string.IsNullOrEmpty(receiptDetail.Item) ? "" : receiptDetail.Item) + "-" + receiptDetail.ReceivedQuantity;
+                    tierVm.ListItem.Add(item);
+                }
             }
             tierVm.Tier = warehousePosition.Tier;
             return Ok(tierVm);

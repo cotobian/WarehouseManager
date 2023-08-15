@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.ViewModels.Constants;
+using WarehouseManager.ViewModels.Warehouse.DeliveryDetail;
 using WarehouseManager.WebPortal.Controllers;
 
 namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
@@ -13,33 +14,86 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         {
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int orderid = 0)
         {
+            ViewBag.OrderId = orderid;
             return View();
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetAllDeliveryDetail()
+        public async Task<ActionResult> AddOrEdit(int orderId, int id = 0)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            List<DeliveryDetail> list = JsonConvert.DeserializeObject<List<DeliveryDetail>>(responseBody).Where(c => c.Status == true).ToList();
-            return Json(new { data = list });
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> AddOrEdit(int id = 0)
-        {
-            if (id == 0) return View(new DeliveryDetail());
+            ViewBag.OrderId = orderId;
+            if (id == 0) return View(new GetDeliveryDetailVm());
             else
             {
                 HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/" + id);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                DeliveryDetail DeliveryDetail = JsonConvert.DeserializeObject<DeliveryDetail>(responseBody);
+                GetDeliveryDetailVm DeliveryDetail = JsonConvert.DeserializeObject<GetDeliveryDetailVm>(responseBody);
                 return View(DeliveryDetail);
             }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetDeliveryDetailByOrder(int orderid)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/orderid/" + orderid);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<GetDeliveryDetailVm> list = JsonConvert.DeserializeObject<List<GetDeliveryDetailVm>>(responseBody).ToList();
+            return Json(new { data = list });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> AddOrEditVm(GetDeliveryDetailVm obj)
+        {
+            if (obj.Id == 0)
+            {
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/AddDeliveryVm/", obj);
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Tạo mới dữ liệu thành công" });
+                }
+                else
+                {
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrEmpty(errorContent))
+                        return Json(new { success = false, message = "Có lỗi tạo mới dữ liệu" });
+                    else
+                        return Json(new { success = false, message = errorContent });
+                }
+            }
+            else
+            {
+                HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiUrl + "/" + obj.Id, convertGetVm(obj));
+                if (response.IsSuccessStatusCode)
+                    return Json(new { success = true, message = "Cập nhật dữ liệu thành công" });
+                else
+                {
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrEmpty(errorContent))
+                        return Json(new { success = false, message = "Có lỗi cập nhật dữ liệu" });
+                    else
+                        return Json(new { success = false, message = errorContent });
+                }
+            }
+        }
+
+        private DeliveryDetail convertGetVm(GetDeliveryDetailVm vm)
+        {
+            return new DeliveryDetail
+            {
+                Id = vm.Id,
+                DeliveryOrderId = vm.DeliveryOrderId,
+                ReceiptDetailId = vm.ReceiptDetailId,
+                Quantity = vm.Quantity,
+                PositionId = vm.PositionId,
+                Size = vm.Size,
+                CBM = vm.CBM,
+                Weight = vm.Weight,
+                Status = vm.Status
+            };
         }
     }
 }
