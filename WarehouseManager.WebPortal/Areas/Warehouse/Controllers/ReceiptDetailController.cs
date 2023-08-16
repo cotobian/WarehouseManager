@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using OfficeOpenXml;
 using WarehouseManager.BackendServer.Data.Entities;
 using WarehouseManager.ViewModels.Constants;
 using WarehouseManager.ViewModels.Warehouse.ReceiptDetail;
@@ -85,6 +86,44 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
                         return Json(new { success = false, message = errorContent });
                 }
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadExcel(IFormFile excelFile, int orderId)
+        {
+            if (excelFile != null && excelFile.Length > 0)
+            {
+                List<List<string>> uploadedData = new List<List<string>>();
+                using (var stream = excelFile.OpenReadStream())
+                using (var package = new ExcelPackage(stream))
+                {
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                    var worksheet = package.Workbook.Worksheets[0];
+                    for (int row = 2; row <= worksheet.Dimension.Columns; row++)
+                    {
+                        List<string> rowData = new List<string>();
+                        for (int col = 1; col <= worksheet.Dimension.Columns; col++)
+                        {
+                            rowData.Add(worksheet.Cells[row, col].Value?.ToString() ?? "");
+                        }
+                        rowData.Add(orderId.ToString());
+                        uploadedData.Add(rowData);
+                    }
+                }
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/UploadExcel", uploadedData);
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Tạo mới dữ liệu thành công" });
+                }
+                else
+                {
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrEmpty(errorContent))
+                        return Json(new { success = false, message = "Có lỗi tạo mới dữ liệu" });
+                    else return Json(new { success = false, message = errorContent });
+                }
+            }
+            else return Json(new { success = false, message = "File Excel không có dữ liệu" });
         }
 
         #endregion Public Methods

@@ -41,6 +41,8 @@ namespace WarehouseManager.BackendServer.Controllers
         [HttpPost("ReceiptOrder")]
         public async Task<IActionResult> CreateByReceiptOrder([FromBody] int orderId)
         {
+            ReceiptOrder receiptOrder = _context.ReceiptOrders.Where(c => c.Id == orderId).FirstOrDefault();
+            receiptOrder.OrderStatus = OrderStatus.Processing;
             List<ReceiptDetail> receiptDetailList = await _context.ReceiptDetails.Where(c => c.OrderId == orderId && c.Status == true).ToListAsync();
             if (receiptDetailList.Count > 0)
             {

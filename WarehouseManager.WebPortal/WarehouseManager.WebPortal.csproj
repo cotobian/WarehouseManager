@@ -7,8 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\Content\forms\ImportReceiptDetail.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\Content\css\sb-admin-2.css" />
     <None Include="wwwroot\Content\css\sb-admin-2.min.css" />
+    <None Include="wwwroot\Content\forms\ImportReceiptDetail.xlsx" />
     <None Include="wwwroot\Content\img\undraw_posting_photo.svg" />
     <None Include="wwwroot\Content\img\undraw_profile.svg" />
     <None Include="wwwroot\Content\img\undraw_profile_1.svg" />
@@ -1890,7 +1895,6 @@
     <Folder Include="Areas\Trucking\Controllers\" />
     <Folder Include="Areas\Warehouse\Data\" />
     <Folder Include="Areas\Warehouse\Models\" />
-    <Folder Include="Areas\Warehouse\Forms\" />
     <Folder Include="wwwroot\Content\forms\images\" />
     <Folder Include="wwwroot\Content\forms\palletsheets\" />
     <Folder Include="wwwroot\css\images\" />

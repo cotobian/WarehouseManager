@@ -65,17 +65,24 @@ class ApiService {
   }
 
   //get remain quantity by po and item
-  static Future<int> remainQuantity(String po, String item) async {
+  static Future<int> remainQuantity(String po, String? item) async {
     final storage = FlutterSecureStorage();
-    var url = Uri.parse('$baseUrl/ReceiptDetail/PO/$po/Item/$item');
+    if (item == null) item = "";
+    var url = Uri.parse('$baseUrl/ReceiptDetail/GetRemain');
     final token = await storage.read(key: 'jwt');
     var headers = {'Content-Type': 'application/json'};
     if (token != null) {
       headers['Authorization'] = 'Bearer $token';
     }
-    final response = await http.get(
+    final response = await http.post(
       url,
       headers: headers,
+      body: jsonEncode(
+        {
+          "PO": po,
+          "Item": item,
+        },
+      ),
     );
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

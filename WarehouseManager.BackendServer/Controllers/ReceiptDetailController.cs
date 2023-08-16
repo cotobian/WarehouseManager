@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using WarehouseManager.BackendServer.Data;
 using WarehouseManager.BackendServer.Data.Entities;
@@ -66,8 +67,8 @@ namespace WarehouseManager.BackendServer.Controllers
             }
         }
 
-        [HttpGet("PO/{po}/Item/{item}")]
-        public async Task<IActionResult> GetRemainQuantity(string po, string item)
+        [HttpPost("GetRemain")]
+        public async Task<IActionResult> GetRemainQuantity(GetRemainVm remain)
         {
             using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
@@ -75,13 +76,52 @@ namespace WarehouseManager.BackendServer.Controllers
                 {
                     await conn.OpenAsync();
                 }
-                var sql = @"select top 1 (rd.ExpectedQuantity - rd.ReceivedQuantity) as Quantity from ReceiptDetails rd
-                join ReceiptOrders ro on rd.OrderId = ro.Id
-                where ro.OrderStatus in (@Status1,@Status2) and rd.PO = @PO and rd.Item = @Item";
-                var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing, PO = po, Item = item };
-                int result = await conn.QuerySingleAsync<int>(sql, parameters, null, 120, CommandType.Text);
+                int result;
+                if (!string.IsNullOrEmpty(remain.Item))
+                {
+                    var sql = @"select top 1 (rd.ExpectedQuantity - rd.ReceivedQuantity) as Quantity from ReceiptDetails rd
+                    join ReceiptOrders ro on rd.OrderId = ro.Id
+                    where ro.OrderStatus in (@Status1,@Status2) and rd.PO = @PO and rd.Item = @Item";
+                    var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing, PO = remain.PO, Item = remain.Item };
+                    result = await conn.QuerySingleAsync<int>(sql, parameters, null, 120, CommandType.Text);
+                }
+                else
+                {
+                    var sql = @"select top 1 (rd.ExpectedQuantity - rd.ReceivedQuantity) as Quantity from ReceiptDetails rd
+                    join ReceiptOrders ro on rd.OrderId = ro.Id
+                    where ro.OrderStatus in (@Status1,@Status2) and rd.PO = @PO";
+                    var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing, PO = remain.PO };
+                    result = await conn.QuerySingleAsync<int>(sql, parameters, null, 120, CommandType.Text);
+                }
                 return Ok(result);
             }
+        }
+
+        [HttpPost("UploadExcel")]
+        public async Task<IActionResult> UploadExcel([FromBody] List<List<string>> uploadedData)
+        {
+            foreach (List<string> item in uploadedData)
+            {
+                ReceiptDetail receiptDetail = new ReceiptDetail();
+                receiptDetail.PO = item[0];
+                receiptDetail.Item = item[1];
+                receiptDetail.ExpectedQuantity = int.Parse(item[2]);
+                if (!string.IsNullOrEmpty(item[3]))
+                {
+                    Unit unit = await _context.Units.Where(c => c.Name.Equals(item[3])).FirstOrDefaultAsync();
+                    if (unit == null) return BadRequest("Wrong Unit Input!");
+                    receiptDetail.UnitId = unit.Id;
+                }
+                receiptDetail.Weight = string.IsNullOrEmpty(item[4]) ? 0 : decimal.Parse(item[4]);
+                receiptDetail.CBM = string.IsNullOrEmpty(item[5]) ? 0 : decimal.Parse(item[5]);
+                receiptDetail.Status = true;
+                receiptDetail.CustomDeclareNo = string.IsNullOrEmpty(item[6]) ? "" : item[6];
+                receiptDetail.Size = string.IsNullOrEmpty(item[7]) ? "" : item[7];
+                receiptDetail.OrderId = int.Parse(item[8]);
+                _context.ReceiptDetails.Add(receiptDetail);
+            }
+            await _context.SaveChangesAsync();
+            return Ok();
         }
     }
 }
