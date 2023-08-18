@@ -60,7 +60,7 @@ namespace WarehouseManager.BackendServer.Controllers
                     await conn.OpenAsync();
                 }
                 var sql = @"select distinct(rd.Item) from ReceiptDetails rd join ReceiptOrders ro on rd.OrderId = ro.Id
-                where ro.OrderStatus in (@Status1,@Status2)";
+                where ro.OrderStatus in (@Status1,@Status2) and rd.Item is not null";
                 var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing };
                 var result = await conn.QueryAsync<string>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());

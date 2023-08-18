@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'LoginPage.dart';
+import 'views/LoginPage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final storage = FlutterSecureStorage();

@@ -71,7 +71,6 @@ class _ImportTallyState extends State<ImportTally> {
     for (int i = 0; i < items.length; i++) {
       if (_listController.position.pixels >=
           _listController.position.maxScrollExtent) {
-        // Khi cuộn xuống cuối cùng của ListView
         allData.addAll(items.sublist(i));
         break;
       }
@@ -126,12 +125,17 @@ class _ImportTallyState extends State<ImportTally> {
                         child: SimpleAutoCompleteTextField(
                           key: GlobalKey(),
                           suggestions: poSuggestions,
-                          clearOnSubmit: false,
+                          clearOnSubmit: true,
                           controller: _poController,
                           decoration: InputDecoration(
                             labelText: 'Số PO',
                           ),
                           textSubmitted: (text) {
+                            setState(() {
+                              _poController.text = text;
+                            });
+                          },
+                          textChanged: (text) {
                             setState(() {
                               _poController.text = text;
                             });
@@ -149,6 +153,11 @@ class _ImportTallyState extends State<ImportTally> {
                             labelText: 'Số Item',
                           ),
                           textSubmitted: (text) {
+                            setState(() {
+                              _itemController.text = text;
+                            });
+                          },
+                          textChanged: (text) {
                             setState(() {
                               _itemController.text = text;
                             });

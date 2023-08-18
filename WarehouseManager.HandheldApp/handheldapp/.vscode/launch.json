@@ -8,7 +8,7 @@
             "name": "handheldapp",
             "request": "launch",
             "type": "dart",
-            "program": "lib/views/main.dart"
+            "program": "lib/main.dart"
         },
         {
             "name": "handheldapp (profile mode)",
