@@ -19,6 +19,18 @@ class _ImportTallyState extends State<ImportTally> {
   List<String> items = [];
   List<String> poSuggestions = [];
   List<String> itemSuggestions = [];
+  List<String> suggestions = [
+    "Apple",
+    "Banana",
+    "Cherry",
+    "Date",
+    "Grape",
+    "Lemon",
+    "Mango",
+    "Orange",
+    "Peach",
+    "Pear"
+  ];
 
   @override
   void initState() {
@@ -124,6 +136,19 @@ class _ImportTallyState extends State<ImportTally> {
                         width: screenWidth / 2,
                         child: SimpleAutoCompleteTextField(
                           key: GlobalKey(),
+                          controller: _poController,
+                          suggestions: suggestions,
+                          textChanged: (text) {
+                            // You can perform actions when the text changes
+                          },
+                          textSubmitted: (text) {
+                            // You can perform actions when the user submits the text
+                            setState(() {
+                              _poController.text = text;
+                            });
+                          },
+
+/*                           key: GlobalKey(),
                           suggestions: poSuggestions,
                           clearOnSubmit: true,
                           controller: _poController,
@@ -135,11 +160,8 @@ class _ImportTallyState extends State<ImportTally> {
                               _poController.text = text;
                             });
                           },
-                          textChanged: (text) {
-                            setState(() {
-                              _poController.text = text;
-                            });
-                          },
+                          submitOnSuggestionTap: true,
+ */
                         ),
                       ),
                       SizedBox(
@@ -153,11 +175,6 @@ class _ImportTallyState extends State<ImportTally> {
                             labelText: 'Số Item',
                           ),
                           textSubmitted: (text) {
-                            setState(() {
-                              _itemController.text = text;
-                            });
-                          },
-                          textChanged: (text) {
                             setState(() {
                               _itemController.text = text;
                             });
