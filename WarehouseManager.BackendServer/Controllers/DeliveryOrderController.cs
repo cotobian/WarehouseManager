@@ -28,8 +28,6 @@ namespace WarehouseManager.BackendServer.Controllers
                         await conn.OpenAsync();
                     }
                     var sql = @"select do.*,
-                    --convert(varchar,do.CreatedDate,103) as CreatedDate,
-                    --convert(varchar,do.ExportDate,103) as ExportDate,
                     wh.DoorNo as DoorName from
                     DeliveryOrders do left join WarehouseDoors wh on do.WarehouseDoorId=wh.Id
                     where do.OrderStatus <> @OrderStatus and do.CreatedUserId=@CreatedUserId";

@@ -32,8 +32,8 @@ namespace WarehouseManager.BackendServer.Controllers
                 when f.JobStatus=2 then N'Đảo chuyển' end as jobTypeText from ForkliftJobs f join Pallets p on f.PalledId=p.Id
                 left join WarehousePositions wp on wp.Id=f.PositionId
                 join Users u1 on u1.Id=f.CreatedUserId left join Users u2
-                on u2.Id = f.CompletedUserId where f.JobStatus!=@JobStatus order by f.Id desc";
-                var parameters = new { JobStatus = JobStatus.Deleted };
+                on u2.Id = f.CompletedUserId where f.JobStatus in (@JobStatus,@JobStatus1) order by f.Id desc";
+                var parameters = new { JobStatus = JobStatus.Created, @JobStatus1 = JobStatus.Processing };
                 var result = await conn.QueryAsync<GetForkliftJobVm>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
             }
@@ -42,7 +42,7 @@ namespace WarehouseManager.BackendServer.Controllers
         [HttpPost("CompleteJob")]
         public async Task<IActionResult> CompleteJob([FromBody] CompleteForkliftJobVm vm)
         {
-            Pallet pallet = await _context.Pallets.Where(c => c.PalletNo == vm.PalletNo && c.Status == true).FirstOrDefaultAsync();
+            Pallet pallet = await _context.Pallets.Where(c => c.PalletNo == vm.PalletNo && c.Status == PalletStatus.Printed).FirstOrDefaultAsync();
             if (pallet == null) return BadRequest("No Pallet found");
             ForkliftJob job = await _context.ForkliftJobs.Where(c => c.PalledId == pallet.Id &&
             c.JobStatus != JobStatus.Deleted && c.JobStatus != JobStatus.Completed).FirstOrDefaultAsync();
@@ -52,16 +52,20 @@ namespace WarehouseManager.BackendServer.Controllers
             WarehousePosition position = await _context.WarehousePositions.Where(c => c.Bay == pos[0] && c.Row == pos[1]
             && c.Row == pos[2] && c.Status == true).FirstOrDefaultAsync();
             if (position == null) return BadRequest("No Position found");
+            PalletDetail palletDetail = await _context.PalletDetails.Where(c => c.PalletId == pallet.Id).FirstOrDefaultAsync();
+            ReceiptDetail receiptDetail = await _context.ReceiptDetails.Where(c => c.Id == palletDetail.ReceiptDetailId).FirstOrDefaultAsync();
+            ReceiptOrder receiptOrder = await _context.ReceiptOrders.Where(c => c.Id == receiptDetail.OrderId).FirstOrDefaultAsync();
+            Customer customer = await _context.Customers.Where(c => c.Id == receiptOrder.CustomerId).FirstOrDefaultAsync();
 
             job.PositionId = position.Id;
             job.CompletedDate = DateTime.Now;
             job.CompletedUserId = GetUserId();
             job.JobStatus = JobStatus.Completed;
 
-            CurrentPosition cp = _context.CurrentPositions.Where(c => c.PositionId == position.Id
-            && c.Status != CurrentPositionStatus.Deleted).FirstOrDefault();
+            CurrentPosition cp = _context.CurrentPositions.Where(c => c.PositionId == position.Id && c.Status != CurrentPositionStatus.Deleted).FirstOrDefault();
             cp.PalletId = pallet.Id;
             cp.Status = CurrentPositionStatus.Occupied;
+            cp.Color = customer.Color;
 
             await _context.SaveChangesAsync();
             return Ok(job.Id);

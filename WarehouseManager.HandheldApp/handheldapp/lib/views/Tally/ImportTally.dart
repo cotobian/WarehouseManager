@@ -1,7 +1,7 @@
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:handheldapp/logics/ApiService.dart';
 import 'package:handheldapp/models/CreatePalletDetailVm.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class ImportTally extends StatefulWidget {
   @override
@@ -17,33 +17,6 @@ class _ImportTallyState extends State<ImportTally> {
   final ScrollController _listController = ScrollController();
   final int ReceiptDetailId = 0;
   List<String> items = [];
-  List<String> poSuggestions = [];
-  List<String> itemSuggestions = [];
-  List<String> suggestions = [
-    "Apple",
-    "Banana",
-    "Cherry",
-    "Date",
-    "Grape",
-    "Lemon",
-    "Mango",
-    "Orange",
-    "Peach",
-    "Pear"
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    initDataSearch();
-  }
-
-  void initDataSearch() async {
-    poSuggestions = await ApiService.availablePO();
-    itemSuggestions = await ApiService.availableItem();
-    setState(() {});
-  }
-
   void displayDialog(context, title, text) {
     showDialog(
       context: context,
@@ -134,50 +107,52 @@ class _ImportTallyState extends State<ImportTally> {
                     children: <Widget>[
                       SizedBox(
                         width: screenWidth / 2,
-                        child: SimpleAutoCompleteTextField(
-                          key: GlobalKey(),
-                          controller: _poController,
-                          suggestions: suggestions,
-                          textChanged: (text) {
-                            // You can perform actions when the text changes
+                        child: TypeAheadField(
+                          textFieldConfiguration: TextFieldConfiguration(
+                              controller: _poController,
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                labelText: 'Số PO',
+                              )),
+                          suggestionsCallback: (pattern) async {
+                            return ApiService.getByPO(pattern);
                           },
-                          textSubmitted: (text) {
-                            // You can perform actions when the user submits the text
+                          onSuggestionSelected: (String suggestion) {
                             setState(() {
-                              _poController.text = text;
+                              _poController.text = suggestion;
                             });
                           },
-
-/*                           key: GlobalKey(),
-                          suggestions: poSuggestions,
-                          clearOnSubmit: true,
-                          controller: _poController,
-                          decoration: InputDecoration(
-                            labelText: 'Số PO',
-                          ),
-                          textSubmitted: (text) {
-                            setState(() {
-                              _poController.text = text;
-                            });
+                          itemBuilder: (context, String suggestion) {
+                            return ListTile(
+                              title: Text(suggestion),
+                            );
                           },
-                          submitOnSuggestionTap: true,
- */
                         ),
                       ),
                       SizedBox(
                         width: screenWidth / 2,
-                        child: SimpleAutoCompleteTextField(
-                          key: GlobalKey(),
-                          suggestions: itemSuggestions,
-                          clearOnSubmit: false,
-                          controller: _itemController,
-                          decoration: InputDecoration(
-                            labelText: 'Số Item',
-                          ),
-                          textSubmitted: (text) {
+                        child: TypeAheadField(
+                          textFieldConfiguration: TextFieldConfiguration(
+                              controller: _itemController,
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                labelText: 'Số Item',
+                              )),
+                          suggestionsCallback: (pattern) async {
+                            return ApiService.getByItem(
+                              _poController.text,
+                              pattern,
+                            );
+                          },
+                          onSuggestionSelected: (String itemsuggestion) {
                             setState(() {
-                              _itemController.text = text;
+                              _itemController.text = itemsuggestion;
                             });
+                          },
+                          itemBuilder: (context, String suggestion) {
+                            return ListTile(
+                              title: Text(suggestion),
+                            );
                           },
                         ),
                       ),

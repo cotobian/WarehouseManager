@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using WarehouseManager.BackendServer.Data.Entities;
+using WarehouseManager.ViewModels.Warehouse.TallyJob;
 using WarehouseManager.WebPortal.Controllers;
 
 namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
@@ -23,7 +24,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<TallyJob> list = JsonConvert.DeserializeObject<List<TallyJob>>(responseBody).ToList();
+            List<GetTallyJobVm> list = JsonConvert.DeserializeObject<List<GetTallyJobVm>>(responseBody).ToList();
             return Json(new { data = list });
         }
 

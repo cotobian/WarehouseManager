@@ -24,10 +24,9 @@ class ApiService {
     return null;
   }
 
-  //get all available PO
-  static Future<List<String>> availablePO() async {
+  static Future<List<String>> getByPO(String po) async {
     final storage = FlutterSecureStorage();
-    var url = Uri.parse('$baseUrl/ReceiptDetail/availablePO');
+    var url = Uri.parse('$baseUrl/ReceiptDetail/getByPO/$po');
     final token = await storage.read(key: 'jwt');
     var headers = {'Content-Type': 'application/json'};
     if (token != null) {
@@ -44,10 +43,9 @@ class ApiService {
       return [];
   }
 
-  //get all available Item
-  static Future<List<String>> availableItem() async {
+  static Future<List<String>> getByItem(String po, String item) async {
     final storage = FlutterSecureStorage();
-    var url = Uri.parse('$baseUrl/ReceiptDetail/availableItem');
+    var url = Uri.parse('$baseUrl/ReceiptDetail/getItemByPO/$po/$item');
     final token = await storage.read(key: 'jwt');
     var headers = {'Content-Type': 'application/json'};
     if (token != null) {

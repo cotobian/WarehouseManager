@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WarehouseManager.ViewModels.Constants;
 
 namespace WarehouseManager.BackendServer.Data.Entities
 {
@@ -15,6 +16,6 @@ namespace WarehouseManager.BackendServer.Data.Entities
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        public bool Status { get; set; } = true;
+        public PalletStatus Status { get; set; }
     }
 }

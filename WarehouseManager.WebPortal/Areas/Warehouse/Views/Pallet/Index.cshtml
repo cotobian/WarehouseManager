@@ -42,6 +42,7 @@
                         <th style="text-align:center;"><input type="checkbox" id="checkAll" /></th>
                         <th>Số Pallet</th>
                         <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
                         <th>Xóa</th>
                     </tr>
                 </thead>
@@ -65,7 +66,7 @@
                     {
                         "data": "id",
                         "render": function(data, type, row, meta) {
-                            return '<input data-id=' + row.palletNo + ' type="checkbox">';
+                            return '<input data-id=' + row.id + ' type="checkbox">';
                         },
                         "orderable": "false",
                         "searchable": false,
@@ -73,14 +74,8 @@
                         "className": 'text-center'
                     },
                     { "data": "palletNo" },
-                    { "data": "createdDate", "render": function (data) {
-                            var date = new Date(data);
-                            var day = date.getDate();
-                            var month = date.getMonth() + 1;
-                            var year = date.getFullYear();
-                            return (day < 10 ? "0" : "") + day + "/" + (month < 10 ? "0" : "") + month + "/" + year;
-                        }
-                    },
+                    { "data": "createdDateText" },
+                    { "data": "statusText" },
                     {
                         "data": "id", "render": function (data) {
                             return "<i class='fa fa-trash f-20 text-danger' onclick=Delete(" + data + ")></i>";
@@ -94,10 +89,7 @@
             });
 
             $("#checkAll").on("change", function () {
-                // Lấy trạng thái của checkbox "checkAll"
                 var isChecked = $(this).prop("checked");
-
-                // Đặt trạng thái của tất cả các checkbox trong cột đầu tiên theo checkbox "checkAll"
                 $("#truckTable tbody").find("input[type='checkbox']").prop("checked", isChecked);
             });
         });
@@ -179,7 +171,7 @@
                 checkedIDs.push(id);
             });
             if (checkedIDs.length == 0) {
-                $.notify(data.message, {
+                $.notify("Hãy chọn Pallet để in!", {
                     globalPosition: "top center",
                     className: "error"
                 })
@@ -195,15 +187,15 @@
                     type: "GET",
                     url: 'Pallet/PrintMultiplePallet?palletIds=' + formattedString,
                     xhrFields: {
-                        responseType: 'blob' // Sử dụng kiểu dữ liệu là blob
+                        responseType: 'blob'
                     },
                     success: function(data) {
-                        // Tạo một URL đối tượng Blob để tải xuống
                         var blob = new Blob([data], { type: 'application/zip' });
                         var link = document.createElement('a');
                         link.href = window.URL.createObjectURL(blob);
-                        link.download = 'ExcelFiles.zip'; // Tên của tệp ZIP
+                        link.download = 'ExcelFiles.zip'; 
                         link.click();
+                        dataTable.ajax.reload();
                     },
                     error: function(xhr, textStatus, errorThrown) {
                         console.error('Lỗi tải xuống: ', errorThrown);

@@ -33,8 +33,8 @@ namespace WarehouseManager.BackendServer.Controllers
             }
         }
 
-        [HttpGet("availablePO")]
-        public async Task<IActionResult> GetAllAvailablePO()
+        [HttpGet("getByPO/{po}")]
+        public async Task<IActionResult> GetByPO(string PO)
         {
             using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
@@ -43,15 +43,16 @@ namespace WarehouseManager.BackendServer.Controllers
                     await conn.OpenAsync();
                 }
                 var sql = @"select rd.PO as PO from ReceiptDetails rd join ReceiptOrders ro on rd.OrderId = ro.Id
-                where ro.OrderStatus in (@Status1,@Status2)";
+                where ro.OrderStatus in (@Status1,@Status2) and rd.ReceivedQuantity < rd.ExpectedQuantity
+                and rd.PO like '%" + PO + "%'";
                 var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing };
                 var result = await conn.QueryAsync<string>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
             }
         }
 
-        [HttpGet("availableItem")]
-        public async Task<IActionResult> GetAllAvailableItem()
+        [HttpGet("getItemByPO/{po}/{item}")]
+        public async Task<IActionResult> GetItemByPO(string PO, string item)
         {
             using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
@@ -59,9 +60,10 @@ namespace WarehouseManager.BackendServer.Controllers
                 {
                     await conn.OpenAsync();
                 }
-                var sql = @"select distinct(rd.Item) from ReceiptDetails rd join ReceiptOrders ro on rd.OrderId = ro.Id
-                where ro.OrderStatus in (@Status1,@Status2) and rd.Item is not null";
-                var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing };
+                var sql = @"select distinct rd.Item as Item from ReceiptDetails rd join ReceiptOrders ro on rd.OrderId = ro.Id
+                where ro.OrderStatus in (@Status1,@Status2)  and rd.ReceivedQuantity < rd.ExpectedQuantity
+                and rd.PO=@PO and rd.Item like '%" + item + "%'";
+                var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing, PO = PO };
                 var result = await conn.QueryAsync<string>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
             }

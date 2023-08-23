@@ -29,7 +29,7 @@ namespace WarehouseManager.BackendServer.Controllers
                 ISNULL(f.CompletedDate,CONVERT(varchar,f.CompletedDate,103)) as CompletedDateText,u1.FullName as CreatedUserName,u2.FullName as CompletedUserName,
                 case when f.JobStatus = 0 then N'Khởi tạo' when f.JobStatus = 1 then N'Xử lý' when f.JobStatus=2 then N'Hoàn tất'
                 else N'Trouble' end as JobStatusText,case when f.jobType = 0 then N'Nhập kho' when f.jobType = 1 then N'Xuất kho'
-                when f.JobStatus=2 then N'Đảo chuyển' end as jobTypeText from TallyJobs f join Pallets p on f.PalletId=p.Id
+                when f.JobStatus=2 then N'Đảo chuyển' end as jobTypeText from TallyJobs f left join Pallets p on f.PalletId=p.Id
                 join Users u1 on u1.Id=f.CreatedUserId left join Users u2
                 on u2.Id = f.CompletedUserId where f.JobStatus!=@JobStatus order by f.Id desc";
                 var parameters = new { JobStatus = JobStatus.Deleted };

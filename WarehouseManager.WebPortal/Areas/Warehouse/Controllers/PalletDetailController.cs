@@ -11,7 +11,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         {
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int palletId)
         {
             return View();
         }
