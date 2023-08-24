@@ -58,7 +58,13 @@ namespace WarehouseManager.BackendServer.Controllers
                 .Select(c => c.Bay)
                 .Distinct()
                 .ToListAsync();
-            foreach (string bay in bayList)
+            List<string> sortedResults = bayList.OrderBy(item =>
+            {
+                char letter = item[0];
+                int number = int.Parse(item.Substring(1));
+                return (letter, number);
+            }).ToList();
+            foreach (string bay in sortedResults)
             {
                 StackLayoutVm vm = new StackLayoutVm();
                 List<RowDisplay> rowList = new List<RowDisplay>();
@@ -99,40 +105,74 @@ namespace WarehouseManager.BackendServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("DisplayTier/{warehouseid}/Bay/{bay}/Row/{row}")]
+        [HttpGet("DisplayTier/{warehouseid}/{bay}/{row}")]
         public async Task<IActionResult> DisplayTier(string bay, string row, int warehouseid)
         {
-            DisplayTierVm tierVm = new DisplayTierVm();
-            WarehousePosition warehousePosition = await _context.WarehousePositions
-                .Where(c => c.Bay.Equals(bay) && c.Row.Equals(row) && c.WarehouseId == warehouseid && c.Status == true)
-                .FirstOrDefaultAsync();
-            if (warehousePosition == null)
+            try
             {
-                return BadRequest("Warehouse Position not found!");
-            }
-            CurrentPosition currentPosition = await _context.CurrentPositions
-                .Where(c => c.PositionId == warehousePosition.Id && c.Status != CurrentPositionStatus.Deleted)
-                .FirstOrDefaultAsync();
-            if (currentPosition == null)
-            {
-                return BadRequest("Stacked Position not found!");
-            }
-            if (currentPosition.PalletId != null)
-            {
-                List<PalletDetail> pallet = await _context.PalletDetails
-                    .Where(c => c.PalletId == currentPosition.PalletId)
-                    .ToListAsync();
-                foreach (PalletDetail palletDetail in pallet)
+                DisplayTierVm vm = new DisplayTierVm();
+                List<string> Tiers = new List<string> { "1", "2", "3", "4", "5", "6" };
+                for (int i = 0; i < 6; i++)
                 {
-                    ReceiptDetail receiptDetail = await _context.ReceiptDetails
-                        .Where(c => c.Id == palletDetail.ReceiptDetailId)
-                        .FirstOrDefaultAsync();
-                    string item = receiptDetail.PO + "-" + (string.IsNullOrEmpty(receiptDetail.Item) ? "" : receiptDetail.Item) + "-" + receiptDetail.ReceivedQuantity;
-                    tierVm.ListItem.Add(item);
+                    var query = from wh in _context.WarehousePositions
+                                join cp in _context.CurrentPositions on wh.Id equals cp.PositionId
+                                where wh.WarehouseId == warehouseid & wh.Bay == bay & wh.Row == row &
+                                wh.Tier == Tiers[i] & wh.Status == true & cp.Status != CurrentPositionStatus.Deleted
+                                select cp.PalletId;
+                    if (query.FirstOrDefault() != null)
+                    {
+                        string palletDetail = "";
+                        int palletID = int.Parse(query.FirstOrDefault().ToString());
+                        List<PalletDetail> listDetail = await _context.PalletDetails.Where(c => c.PalletId == palletID).ToListAsync();
+                        foreach (PalletDetail detail in listDetail)
+                        {
+                            ReceiptDetail receiptDetail = await _context.ReceiptDetails
+                                         .Where(c => c.Id == detail.ReceiptDetailId)
+                                         .FirstOrDefaultAsync();
+                            string item = receiptDetail.PO + "-" + (string.IsNullOrEmpty(receiptDetail.Item) ? "" : receiptDetail.Item) + "-" + receiptDetail.ReceivedQuantity;
+                            palletDetail += item + "-";
+                        }
+                        if (palletDetail.EndsWith("-"))
+                            palletDetail = palletDetail.Substring(0, palletDetail.Length - 1);
+                        vm.ListItem.Add(palletDetail);
+                    }
+                    else vm.ListItem.Add("");
                 }
+                return Ok(vm);
             }
-            tierVm.Tier = warehousePosition.Tier;
-            return Ok(tierVm);
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+            //using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            //{
+            //    DisplayTierVm tierVm = new DisplayTierVm();
+            //    if (conn.State == ConnectionState.Closed)
+            //    {
+            //        await conn.OpenAsync();
+            //    }
+            //    var sql = @"select b.PalletId from WarehousePositions a join CurrentPositions b
+            //    on a.Id=b.PositionId where a.Bay=@Bay and a.Row=@Row and a.WarehouseId=@WarehouseId
+            //    and a.Status=1 and b.Status!=@Status ";
+            //    var parameters = new { Bay = bay, Row = row, WarehouseId = warehouseid, Status = CurrentPositionStatus.Deleted };
+            //    List<int> palletIds = (await conn.QueryAsync<int>(sql, parameters, null, 120, CommandType.Text)).ToList();
+            //    if (palletIds != null)
+            //    {
+            //        List<PalletDetail> pallet = await _context.PalletDetails
+            //            .Where(c => palletIds.Contains(c.PalletId))
+            //            .ToListAsync();
+            //        foreach (PalletDetail palletDetail in pallet)
+            //        {
+            //            ReceiptDetail receiptDetail = await _context.ReceiptDetails
+            //                .Where(c => c.Id == palletDetail.ReceiptDetailId)
+            //                .FirstOrDefaultAsync();
+            //            string item = receiptDetail.PO + "-" + (string.IsNullOrEmpty(receiptDetail.Item) ? "" : receiptDetail.Item) + "-" + receiptDetail.ReceivedQuantity;
+            //            tierVm.ListItem.Add(item);
+            //        }
+            //    }
+            //    tierVm.Tier = warehousePosition.Tier;
+            //    return Ok(tierVm);
+            //}
         }
     }
 }

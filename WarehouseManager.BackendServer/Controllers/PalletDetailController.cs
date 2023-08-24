@@ -59,22 +59,21 @@ namespace WarehouseManager.BackendServer.Controllers
             return Ok();
         }
 
-        [HttpGet("GetPalletDetail/{palletId}")]
-        public async Task<IActionResult> GetPalletDetail(int palletId)
+        [HttpGet("{palletId}")]
+        public override async Task<IActionResult> GetById(int palletId)
         {
             List<PalletDetail> detailList = await _context.PalletDetails.Where(c => c.PalletId == palletId).ToListAsync();
-            GetPalletDetailVm getPallet = new GetPalletDetailVm();
-            getPallet.PalletId = palletId;
+            List<GetPalletDetailVm> listPallet = new List<GetPalletDetailVm>();
             foreach (PalletDetail detail in detailList)
             {
-                PartPallet part = new PartPallet();
+                GetPalletDetailVm part = new GetPalletDetailVm();
                 ReceiptDetail receipt = await _context.ReceiptDetails.Where(c => c.Id == detail.ReceiptDetailId).FirstOrDefaultAsync();
                 part.PO = receipt.PO;
                 part.Item = receipt.Item;
                 part.Quantity = detail.Quantity;
-                getPallet.ListPartPallet.Add(part);
+                listPallet.Add(part);
             }
-            return Ok(getPallet);
+            return Ok(listPallet);
         }
     }
 }

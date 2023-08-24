@@ -2,7 +2,6 @@
 {
     public class DisplayTierVm
     {
-        public string Tier { get; set; } = string.Empty;
-        public List<string>? ListItem { get; set; }
+        public List<string> ListItem { get; set; } = new List<string>();
     }
 }

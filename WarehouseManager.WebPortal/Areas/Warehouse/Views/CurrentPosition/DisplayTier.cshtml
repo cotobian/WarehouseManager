@@ -21,53 +21,76 @@
         border: 1px solid blue;
         margin-top: 10px;
         border-radius: 0.35rem;
+        font-size: 12px;
     }
+    .tier-text{
+        font-size: 15px;
+        margin-right: 10px;
+    }
+    .tier-row {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+    }
+
 </style>
 </head>
 <body>
 
 <div class="container-tier">
-    <span class="tier-text">01</span>
-    <div class="tier">
-        @foreach (var item in Model.ListItem[0])
-        {
-           @item.ToString()
-        }
+    <div class="tier-row">
+        <span class="tier-text">06</span>
+        <div class="tier">
+            @foreach (var item in Model.ListItem[5])
+            {
+               @item.ToString()
+            }
+        </div>
     </div>
-    <span class="tier-text">02</span>
-    <div class="tier">
-        @foreach (var item in Model.ListItem[1])
-        {
-           @item.ToString()
-        }
+    <div class="tier-row">
+        <span class="tier-text">05</span>
+        <div class="tier">
+            @foreach (var item in Model.ListItem[4])
+            {
+               @item.ToString()
+            }
+        </div>
     </div>
-    <span class="tier-text">03</span>
-    <div class="tier">
-        @foreach (var item in Model.ListItem[2])
-        {
-           @item.ToString()
-        }
+    <div class="tier-row">
+        <span class="tier-text">04</span>
+        <div class="tier">
+            @foreach (var item in Model.ListItem[3])
+            {
+               @item.ToString()
+            }
+        </div>
     </div>
-    <span class="tier-text">04</span>
-    <div class="tier">
-        @foreach (var item in Model.ListItem[3])
-        {
-           @item.ToString()
-        }
+    <div class="tier-row">
+        <span class="tier-text">03</span>
+        <div class="tier">
+            @foreach (var item in Model.ListItem[2])
+            {
+               @item.ToString()
+            }
+        </div>
     </div>
-    <span class="tier-text">05</span>
-    <div class="tier">
-        @foreach (var item in Model.ListItem[4])
-        {
-           @item.ToString()
-        }
+    <div class="tier-row">
+        <span class="tier-text">02</span>
+        <div class="tier">
+            @foreach (var item in Model.ListItem[1])
+            {
+               @item.ToString()
+            }
+        </div>
     </div>
-    <span class="tier-text">06</span>
-    <div class="tier">
-        @foreach (var item in Model.ListItem[5])
-        {
-           @item.ToString()
-        }
+    <div class="tier-row">
+        <span class="tier-text">01</span>
+        <div class="tier">
+            @foreach (var item in Model.ListItem[0])
+            {
+               @item.ToString()
+            }
+        </div>
     </div>
 </div>
 

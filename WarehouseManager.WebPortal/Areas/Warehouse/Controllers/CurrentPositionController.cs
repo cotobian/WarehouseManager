@@ -35,7 +35,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<IActionResult> DisplayTier(string bay, string row, int warehouseid)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/DisplayTier/" + warehouseid + "/Bay/" + bay + "/Row/" + row);
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl + "/DisplayTier/" + warehouseid + "/" + bay + "/" + row);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             DisplayTierVm list = JsonConvert.DeserializeObject<DisplayTierVm>(responseBody);

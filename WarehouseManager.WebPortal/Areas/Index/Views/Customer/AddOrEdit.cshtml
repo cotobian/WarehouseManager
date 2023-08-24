@@ -2,6 +2,7 @@
 @{
     Layout = null;
 }
+
 <form action="Customer/AddOrEdit" method="post" onsubmit="return SubmitForm(this)">
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.Id)
@@ -38,6 +39,7 @@
         <input type="reset" value="Reset" class="btn btn-warning" />
     </div>
 </form>
+
 <script>
     $(document).ready(function () {
     $('.colorpicker').colorpicker();
