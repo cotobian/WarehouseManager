@@ -40,7 +40,7 @@ namespace WarehouseManager.BackendServer.Controllers
                 }
                 var sql = @"select wp.Bay,wp.Row,wp.Tier,rd.PO,rd.Item,pd.Quantity
                 from CurrentPositions cp join WarehousePositions wp
-                on cp.PositionId=wp.Id join PalletDetails pd on pd.Id=cp.PalletId
+                on cp.PositionId=wp.Id join PalletDetails pd on pd.PalletId=cp.PalletId
                 join ReceiptDetails rd on rd.Id=pd.ReceiptDetailId where
                 wp.WarehouseId=@WarehouseId and cp.Status=@Status";
                 var parameters = new { WarehouseId = warehouseid, Status = CurrentPositionStatus.Occupied };

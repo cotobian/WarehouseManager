@@ -71,19 +71,19 @@
         function PopupForm(url) {
             var formDiv = $('<div/>');
             $.get(url)
-                .done(function (response) {
-                    formDiv.html(response);
-                    Popup = formDiv.dialog({
-                        autoOpen: true,
-                        resizeable: false,
-                        title: 'Nhập thông tin PO',
-                        height: 470,
-                        width: 600,
-                        close: function () {
-                            Popup.dialog('destroy').remove();
-                        }
-                    });
+            .done(function (response) {
+                formDiv.html(response);
+                Popup = formDiv.dialog({
+                    autoOpen: true,
+                    resizeable: false,
+                    title: 'Nhập thông tin PO',
+                    height: 570,
+                    width: 600,
+                    close: function () {
+                        Popup.dialog('destroy').remove();
+                    }
                 });
+            });
         }
 
         function SubmitForm(form) {

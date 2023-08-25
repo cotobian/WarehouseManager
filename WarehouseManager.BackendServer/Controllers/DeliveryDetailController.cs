@@ -45,7 +45,7 @@ namespace WarehouseManager.BackendServer.Controllers
                 .FirstOrDefaultAsync();
             if (palletDetail == null) return BadRequest("Pallet Detail Not found");
             CurrentPosition currentPosition = await _context.CurrentPositions
-                .Where(c => c.PalletId == palletDetail.PalletId && c.Status == ViewModels.Constants.CurrentPositionStatus.Occupied)
+                .Where(c => c.PalletId == palletDetail.PalletId && c.Status == CurrentPositionStatus.Occupied)
                 .FirstOrDefaultAsync();
             if (currentPosition == null) return BadRequest("Pallet Stacked Not found");
             item.ReceiptDetailId = receiptDetail.Id;

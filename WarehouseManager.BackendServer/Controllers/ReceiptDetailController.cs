@@ -69,6 +69,28 @@ namespace WarehouseManager.BackendServer.Controllers
             }
         }
 
+        [HttpGet("getAvailablePO")]
+        public async Task<IActionResult> GetAvailablePO()
+        {
+            var query = from rd in _context.ReceiptDetails
+                        join ro in _context.ReceiptOrders on rd.OrderId equals ro.Id
+                        where rd.Status == true & rd.ReceivedQuantity < rd.ExpectedQuantity
+                        & (ro.OrderStatus == OrderStatus.Created || ro.OrderStatus == OrderStatus.Processing)
+                        select rd.PO;
+            return Ok(await query.Distinct().ToListAsync());
+        }
+
+        [HttpGet("getAvailableItem")]
+        public async Task<IActionResult> GetAvailableItem()
+        {
+            var query = from rd in _context.ReceiptDetails
+                        join ro in _context.ReceiptOrders on rd.OrderId equals ro.Id
+                        where rd.Status == true & rd.ReceivedQuantity < rd.ExpectedQuantity & rd.Item != null
+                        & (ro.OrderStatus == OrderStatus.Created || ro.OrderStatus == OrderStatus.Processing)
+                        select rd.Item;
+            return Ok(await query.Distinct().ToListAsync());
+        }
+
         [HttpPost("GetRemain")]
         public async Task<IActionResult> GetRemainQuantity(GetRemainVm remain)
         {

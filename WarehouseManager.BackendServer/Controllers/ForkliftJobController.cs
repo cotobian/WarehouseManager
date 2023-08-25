@@ -32,8 +32,8 @@ namespace WarehouseManager.BackendServer.Controllers
                 when f.JobStatus=2 then N'Đảo chuyển' end as jobTypeText from ForkliftJobs f join Pallets p on f.PalledId=p.Id
                 left join WarehousePositions wp on wp.Id=f.PositionId
                 join Users u1 on u1.Id=f.CreatedUserId left join Users u2
-                on u2.Id = f.CompletedUserId where f.JobStatus in (@JobStatus,@JobStatus1) order by f.Id desc";
-                var parameters = new { JobStatus = JobStatus.Created, @JobStatus1 = JobStatus.Processing };
+                on u2.Id = f.CompletedUserId where f.JobStatus <> @JobStatus order by f.Id desc";
+                var parameters = new { JobStatus = JobStatus.Deleted };
                 var result = await conn.QueryAsync<GetForkliftJobVm>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
             }

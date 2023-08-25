@@ -1,8 +1,197 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <h2>Dashboard</h2>
+    <div class="row">
+        <div class="col-xl-3 col-md-3 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" style="display:inline-block">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Doanh thu (Hàng tháng)
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">1,678,018,278 VND</div>
+                        </div>
+                        <div class="col-auto align-items-center" style="display:inline-block;float:right">
+                            <i class="fa fa-usd fa-3x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-3 mb-4">
+            <div class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" style="display:inline-block">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Số chuyến vận tải
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">646 chuyến</div>
+                        </div>
+                        <div class="col-auto align-items-center" style="display:inline-block;float:right">
+                            <i class="fa fa-calendar fa-3x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-3 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" style="display:inline-block">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Số xe
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">54 xe</div>
+                        </div>
+                        <div class="col-auto align-items-center" style="display:inline-block;float:right">
+                            <i class="fa fa-truck fa-3x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-3 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" style="display:inline-block">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Chưa thực hiện
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">18 lệnh vận tải</div>
+                        </div>
+                        <div class="col-auto align-items-center" style="display:inline-block;float:right">
+                            <i class="fa fa-commenting fa-3x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-5 col-md-5 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h4 class="m-0 font-weight-bold text-primary">Thống kê vị trí kho</h4>
+                </div>
+                <div class="card-body chart-body">
+                    <div class="chart-area">
+                        <canvas id="myPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-7 col-md-7 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h4 class="m-0 font-weight-bold text-primary">Tồn kho theo khách hàng</h4>
+                </div>
+                <div class="card-body chart-body">
+                    <div class="chart-area">
+                        <canvas id="diabanChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script>
+        $('.header').height($(window).height());
+
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#858796';
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/Warehouse/Report/getWarehouseLaden",
+                type: "GET",
+                success: function (response) {
+                    var ctx = document.getElementById("myPieChart");
+                    var vitrikhoChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: ["Số vị trí sử dụng", "Số vị trí trống"],
+                            datasets: [{
+                                data: [response.data.sovitrisudung, response.data.sovitritrong - response.data.sovitrisudung],
+                                backgroundColor: [
+                                    '#4e73df',
+                                    '#1cc88a'
+                                ],
+                                borderColor: [
+                                    '#2e59d9',
+                                    '#17a673'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            tooltips: {
+                                backgroundColor: "rgb(255,255,255)",
+                                bodyFontColor: "#858796",
+                                borderColor: '#dddfeb',
+                                borderWidth: 1,
+                                xPadding: 15,
+                                yPadding: 15,
+                                displayColors: false,
+                                caretPadding: 10,
+                            },
+                            legend: {
+                                position: 'bottom'
+                            },
+                            cutoutPercentage: 0,
+                        },
+                    });
+                }
+            });
+
+            $.ajax({
+                url: "/Warehouse/Report/GetStockByCustomer",
+                type: "GET",
+                success: function (response) {
+                    var makho = [], soluong = [], sovitri = [];
+                    for (i = 0; i < response.data.length; i++)
+                    {
+                        makho.push(response.data[i].MAKHO);
+                        soluong.push(response.data[i].soluong);
+                        sovitri.push(response.data[i].sovitri);
+                    }
+                    var tonkhotheokhChart = new Chart(document.getElementById("diabanChart"), {
+                        type: 'bar',
+                        data: {
+                            labels: makho,
+                            datasets: [
+                              {
+                                  label: "Số carton",
+                                  backgroundColor: "#f38b4a",
+                                  data: soluong
+                              },
+                              {
+                                  label: "Số vị trí",
+                                  backgroundColor: "#56d798",
+                                  data: sovitri
+                              }
+                            ]
+                        },
+                        options: {
+                            legend: { display: false },
+                            title: {
+                                display: false,
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>

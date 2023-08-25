@@ -23,6 +23,8 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<ActionResult> AddOrEdit(int orderId, int id = 0)
         {
+            ViewBag.POList = GetPOList();
+            ViewBag.ItemList = GetItemList();
             ViewBag.OrderId = orderId;
             if (id == 0) return View(new GetDeliveryDetailVm());
             else
@@ -80,6 +82,8 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
             }
         }
 
+        #region Private
+
         private DeliveryDetail convertGetVm(GetDeliveryDetailVm vm)
         {
             return new DeliveryDetail
@@ -95,5 +99,25 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
                 Status = vm.Status
             };
         }
+
+        private async Task<List<string>> GetPOList()
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync("/api/ReceiptDetail/GetAvailablePO");
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<string> pos = JsonConvert.DeserializeObject<List<string>>(responseBody);
+            return pos;
+        }
+
+        private async Task<List<string>> GetItemList()
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync("/api/ReceiptDetail/GetAvailableItem");
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<string> items = JsonConvert.DeserializeObject<List<string>>(responseBody);
+            return items;
+        }
+
+        #endregion Private
     }
 }
