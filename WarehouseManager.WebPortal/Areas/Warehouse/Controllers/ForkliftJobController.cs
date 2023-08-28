@@ -42,5 +42,21 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
                 return View(ForkliftJob);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateByDeliveryOrder(int orderId)
+        {
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/DeliveryOrder", orderId);
+            if (response.IsSuccessStatusCode)
+                return Json(new { success = true, message = "Tạo job thành công" });
+            else
+            {
+                string errorContent = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(errorContent))
+                    return Json(new { success = false, message = "Có lỗi tạo job" });
+                else
+                    return Json(new { success = false, message = errorContent });
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace WarehouseManager.BackendServer.Controllers
         {
         }
 
-        [HttpGet("orderid/{id}")]
+        [HttpGet("orderid/{orderid}")]
         public async Task<IActionResult> GetByOrderId(int orderid)
         {
             using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
@@ -25,8 +25,10 @@ namespace WarehouseManager.BackendServer.Controllers
                 {
                     await conn.OpenAsync();
                 }
-                var sql = @"select rd.*,u.Name as UnitName from ReceiptDetails rd left join Units u
-                on rd.UnitId=u.Id where rd.OrderId=@OrderId and rd.Status=1";
+                var sql = @"select dd.*,CONCAT(wp.Bay,'.',wp.Row,'.',wp.Tier) as PositionName,
+                rd.PO,rd.Item from DeliveryDetails dd left join WarehousePositions wp
+                on dd.PositionId=wp.Id join ReceiptDetails rd on rd.Id=dd.ReceiptDetailId where
+                DeliveryOrderId=@OrderId and dd.Status=1";
                 var parameters = new { OrderId = orderid };
                 var result = await conn.QueryAsync<GetDeliveryDetailVm>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
@@ -48,6 +50,7 @@ namespace WarehouseManager.BackendServer.Controllers
                 .Where(c => c.PalletId == palletDetail.PalletId && c.Status == CurrentPositionStatus.Occupied)
                 .FirstOrDefaultAsync();
             if (currentPosition == null) return BadRequest("Pallet Stacked Not found");
+            item.PositionId = currentPosition.PositionId;
             item.ReceiptDetailId = receiptDetail.Id;
             DeliveryDetail deliveryDetail = convertGetVm(item);
             _context.DeliveryDetails.Add(deliveryDetail);
@@ -61,6 +64,39 @@ namespace WarehouseManager.BackendServer.Controllers
             forkliftJob.PositionId = currentPosition.PositionId;
             forkliftJob.JobStatus = JobStatus.Created;
             _context.ForkliftJobs.Add(forkliftJob);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost("UploadExcel")]
+        public async Task<IActionResult> UploadExcel([FromBody] List<List<string>> uploadedData)
+        {
+            foreach (List<string> item in uploadedData)
+            {
+                DeliveryDetail deliveryDetail = new DeliveryDetail();
+                string PO = item[0];
+                string? Item = item[1];
+                ReceiptDetail receiptDetail = await _context.ReceiptDetails
+                    .Where(c => c.PO.Equals(PO) && (string.IsNullOrEmpty(c.Item) || c.Item.Equals(Item)))
+                    .FirstOrDefaultAsync();
+                if (receiptDetail == null) return BadRequest("PO and Item Not found");
+                PalletDetail palletDetail = await _context.PalletDetails
+                    .Where(c => c.ReceiptDetailId == receiptDetail.Id)
+                    .FirstOrDefaultAsync();
+                if (palletDetail == null) return BadRequest("Pallet Detail Not found");
+                CurrentPosition currentPosition = await _context.CurrentPositions
+                    .Where(c => c.PalletId == palletDetail.PalletId && c.Status == CurrentPositionStatus.Occupied)
+                    .FirstOrDefaultAsync();
+                if (currentPosition == null) return BadRequest("Pallet Stacked Not found");
+                deliveryDetail.ReceiptDetailId = receiptDetail.Id;
+                deliveryDetail.PositionId = currentPosition.Id;
+                deliveryDetail.Quantity = int.Parse(item[2]);
+                deliveryDetail.Weight = int.Parse(item[3]);
+                deliveryDetail.CBM = int.Parse(item[4]);
+                deliveryDetail.Size = item[5];
+                deliveryDetail.Status = true;
+                _context.DeliveryDetails.Add(deliveryDetail);
+            }
             await _context.SaveChangesAsync();
             return Ok();
         }

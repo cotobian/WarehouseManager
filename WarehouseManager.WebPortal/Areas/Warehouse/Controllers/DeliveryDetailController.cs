@@ -52,6 +52,7 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
         {
             if (obj.Id == 0)
             {
+                obj.Status = true;
                 HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiUrl + "/AddDeliveryVm/", obj);
                 if (response.IsSuccessStatusCode)
                 {
@@ -60,10 +61,8 @@ namespace WarehouseManager.WebPortal.Areas.Warehouse.Controllers
                 else
                 {
                     string errorContent = await response.Content.ReadAsStringAsync();
-                    if (string.IsNullOrEmpty(errorContent))
-                        return Json(new { success = false, message = "Có lỗi tạo mới dữ liệu" });
-                    else
-                        return Json(new { success = false, message = errorContent });
+                    if (string.IsNullOrEmpty(errorContent)) return Json(new { success = false, message = "Có lỗi tạo mới dữ liệu" });
+                    else return Json(new { success = false, message = errorContent });
                 }
             }
             else

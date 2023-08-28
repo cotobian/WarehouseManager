@@ -83,5 +83,33 @@ namespace WarehouseManager.BackendServer.Controllers
             }
             else return NotFound();
         }
+
+        [HttpPost("DeliveryOrder")]
+        public async Task<IActionResult> CreateByDeliveryOrder([FromBody] int orderId)
+        {
+            DeliveryOrder deliveryOrder = _context.DeliveryOrders.Where(c => c.Id == orderId).FirstOrDefault();
+            deliveryOrder.OrderStatus = OrderStatus.Processing;
+            List<DeliveryDetail> deliveryDetailsList = await _context.DeliveryDetails.Where(c => c.DeliveryOrderId == orderId && c.Status == true).ToListAsync();
+            if (deliveryDetailsList.Count > 0)
+            {
+                foreach (DeliveryDetail detail in deliveryDetailsList)
+                {
+                    ForkliftJob job = new ForkliftJob();
+                    ReceiptDetail receiptDetail = await _context.ReceiptDetails.Where(c => c.Id == detail.ReceiptDetailId).FirstOrDefaultAsync();
+                    PalletDetail palletDetail = await _context.PalletDetails.Where(c => c.ReceiptDetailId == receiptDetail.Id).FirstOrDefaultAsync();
+                    int positionId = await _context.CurrentPositions.Where(c => c.PalletId == palletDetail.PalletId).Select(c => c.PositionId).FirstOrDefaultAsync();
+                    job.jobType = JobType.Outbound;
+                    job.PalledId = palletDetail.PalletId;
+                    job.PositionId = positionId;
+                    job.CreatedDate = DateTime.Now;
+                    job.CreatedUserId = GetUserId();
+                    job.JobStatus = JobStatus.Created;
+                    _context.ForkliftJobs.Add(job);
+                }
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            else return BadRequest("No available detail of Delivery Order " + orderId + "!");
+        }
     }
 }
