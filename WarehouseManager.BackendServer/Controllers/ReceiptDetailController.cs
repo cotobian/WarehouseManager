@@ -63,29 +63,29 @@ namespace WarehouseManager.BackendServer.Controllers
                 var sql = @"select distinct rd.Item as Item from ReceiptDetails rd join ReceiptOrders ro on rd.OrderId = ro.Id
                 where ro.OrderStatus in (@Status1,@Status2)  and rd.ReceivedQuantity < rd.ExpectedQuantity
                 and rd.PO=@PO and rd.Item like '%" + item + "%'";
-                var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing, PO = PO };
+                var parameters = new { Status1 = OrderStatus.Created, Status2 = OrderStatus.Processing, PO };
                 var result = await conn.QueryAsync<string>(sql, parameters, null, 120, CommandType.Text);
                 return Ok(result.ToList());
             }
         }
 
-        [HttpGet("getAvailablePO")]
-        public async Task<IActionResult> GetAvailablePO()
+        [HttpGet("getStackedPO")]
+        public async Task<IActionResult> GetStackedPO()
         {
             var query = from rd in _context.ReceiptDetails
                         join ro in _context.ReceiptOrders on rd.OrderId equals ro.Id
-                        where rd.Status == true & rd.ReceivedQuantity < rd.ExpectedQuantity
+                        where rd.Status == true & rd.ReceivedQuantity == rd.ExpectedQuantity
                         & (ro.OrderStatus == OrderStatus.Created || ro.OrderStatus == OrderStatus.Processing)
                         select rd.PO;
             return Ok(await query.Distinct().ToListAsync());
         }
 
-        [HttpGet("getAvailableItem")]
-        public async Task<IActionResult> GetAvailableItem()
+        [HttpGet("getStackedItem")]
+        public async Task<IActionResult> GetStackedItem()
         {
             var query = from rd in _context.ReceiptDetails
                         join ro in _context.ReceiptOrders on rd.OrderId equals ro.Id
-                        where rd.Status == true & rd.ReceivedQuantity < rd.ExpectedQuantity & rd.Item != null
+                        where rd.Status == true & rd.ReceivedQuantity == rd.ExpectedQuantity & rd.Item != null
                         & (ro.OrderStatus == OrderStatus.Created || ro.OrderStatus == OrderStatus.Processing)
                         select rd.Item;
             return Ok(await query.Distinct().ToListAsync());

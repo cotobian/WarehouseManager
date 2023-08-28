@@ -8,11 +8,11 @@
     @Html.HiddenFor(model => model.DeliveryOrderId)
     <div class="form-group">
         <label class="control-label">PO</label>
-        @Html.DropDownListFor(model => model.PO, new SelectList(ViewBag.POList, "PO", "PO"), "--Chọn PO--", new { @class = "form-control" } )
+        @Html.DropDownListFor(model => model.PO, new SelectList(ViewBag.POList), "--Chọn PO--", new { @class = "form-control" } )
     </div>
     <div class="form-group">
         <label class="control-label">Item</label>
-        @Html.DropDownListFor(model => model.Item, new SelectList(ViewBag.POList, "Item", "Item"), "--Chọn Item--", new { @class = "form-control" } )
+        @Html.DropDownListFor(model => model.Item, new SelectList(ViewBag.ItemList), "--Chọn Item--", new { @class = "form-control" } )
     </div>
     <div class="form-group">
         <label class="control-label">Kích thước</label>

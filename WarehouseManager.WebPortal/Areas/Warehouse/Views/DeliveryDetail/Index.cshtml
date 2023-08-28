@@ -89,7 +89,7 @@
         function SubmitForm(form) {
             $.ajax({
                 type: "POST",
-                url: form.action,
+                url: "AddOrEditVm",
                 data: $(form).serialize(),
                 success: function (data) {
                     if (data.success) {
@@ -135,10 +135,6 @@
                     }
                 });
             }
-        }
-
-        function CreateTallyJob() {
-
         }
     </script>
 }
